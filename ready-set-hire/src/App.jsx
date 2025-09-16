@@ -17,7 +17,7 @@ export default function App() {
     { path: "/about", label: "About" },
   ];
 
-  return ( // (no footer currently)
+  return ( // (no footer currently) (outlet is child component of current root that you want to show)
     <div className="App">
       <Header rootName={rootName} navLinks={navLinks} />
       <Outlet />
