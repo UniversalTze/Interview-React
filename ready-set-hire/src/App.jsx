@@ -7,7 +7,7 @@ import Header from './components/layout/Header'
 
 export async function loader() {
   // Could fetch site-wide settings here; returning static for now
-  return { rootName: "ReadySetHire!!!" };
+  return { rootName: "ReadySetHire!" };
 }
 
 export default function App() {
