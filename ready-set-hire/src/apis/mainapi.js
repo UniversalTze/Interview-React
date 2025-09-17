@@ -2,9 +2,9 @@
 Main api.js that is shared across all APIs so code is not reused. 
 */
 
-const BASE_URL = 'https://comp2140a2.uqcloud.net/api';
+export const BASE_URL = 'https://comp2140a2.uqcloud.net/api';
 
-
+export const token = import.meta.env.VITE_A2_WEB_TOKEN;
 /**
  * Small helper to handle fetch + errors consistently.
  * Passing signal: request.signal from loaders/actions lets React Router cancel 
@@ -26,3 +26,5 @@ async function request(url, options = {}) {
 async function safeText(res) {
   try { return await res.text(); } catch { return ''; }
 }
+
+export default request;
