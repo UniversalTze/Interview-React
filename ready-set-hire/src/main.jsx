@@ -11,22 +11,20 @@ import {
 } from "react-router-dom";
 
 import About from "./components/About";
-import Home from "./components/Home";
+import InterviewList, { loader as InterviewListLoader } from './components/InterviewList';
+import Home from "./components/Home"
+import ErrorFallback from './components/ErrorElement';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     loader: rootLoader,  // same as getEffect() hook
-    errorElement: (
-      <div className="container mt-4">
-        <h2>Oops</h2>
-        <p>Something went wrong loading this page.</p>
-      </div>
-    ),
+    errorElement: <ErrorFallback />,
     children: [
       { index: true, element: <Home /> },
       { path: "about", element: <About /> },
+      { path: "interview", element: <InterviewList />, loader: InterviewListLoader },
     ],
   },
 ]);
