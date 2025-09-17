@@ -1,0 +1,59 @@
+/*
+Api for the Applicant's answer end point
+*/
+import { BASE_URL } from './mainapi'
+
+const APPLICANT_ANS_URL = `${BASE_URL}/applicant_answer`;
+
+/** 
+ * Get all answers assoicated wiht an applicant
+ */
+export const getAllApplicantAnswers = (id, { signal } = {}) => { 
+  request(`${APPLICANT_ANS_URL}?applicant_id=eq.${id}`, {
+    method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
+    headers: {
+      'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+    },
+    signal,
+  })
+};
+
+/**
+ * Create an Applicant answer
+ */
+export const createApplicantAnswer = (post, { signal } = {}) =>
+  request(APPLICANT_ANS_URL, {
+    method: 'POST',
+    headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+    },
+    body: JSON.stringify(post),
+    signal,
+  });
+
+/**
+ * Update a Question
+ */
+export const updateApplicantAnswer = (id, post, { signal } = {}) =>
+  request(`${APPLICANT_ANS_URL}?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+    },
+    body: JSON.stringify(post),
+    signal,
+  });
+
+/**
+ * Delete a Question
+ */
+export const deleteApplicantAnswer = (id, { signal } = {}) =>
+  request(`${APPLICANT_ANS_URL}?id=eq.${id}`, {
+    method: 'DELETE',
+     headers: {
+      'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+    },
+    signal,
+  });

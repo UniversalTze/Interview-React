@@ -1,16 +1,16 @@
 /*
-Api for the Interview Endpoint
+Api for the Applicant Endpoint
 */
 import { BASE_URL } from './mainapi'
 
-const INTERVIEW_BASE_URL = `${BASE_URL}/interview`;
+const QUESTION_URL = `${BASE_URL}/question`;
 
-/*
-Get all interviews
-*/
-export const getAllInterviews = ({ signal } = {}) => { 
-  request(INTERVIEW_BASE_URL, {
-    method: 'GET',  // optional, fetch defaults to GET
+/** 
+ * Get all questions assoicated wiht an interview
+ */
+export const getAllQuestions = (id, { signal } = {}) => { 
+  request(`${QUESTION_URL}?interview_id=eq.${id}`, {
+    method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
     headers: {
       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
     },
@@ -19,10 +19,10 @@ export const getAllInterviews = ({ signal } = {}) => {
 };
 
 /**
- * Create an Interview
+ * Create an Applicant
  */
-export const createPost = (post, { signal } = {}) =>
-  request(INTERVIEW_BASE_URL, {
+export const createQuestion = (post, { signal } = {}) =>
+  request(QUESTION_URL, {
     method: 'POST',
     headers: { 
         'Content-Type': 'application/json',
@@ -33,12 +33,12 @@ export const createPost = (post, { signal } = {}) =>
   });
 
 /**
- * Update an Interview
+ * Update a Question
  */
-export const updatePost = (id, post, { signal } = {}) =>
-  request(`${BASE_URL}?id=eq.${id}`, {
+export const updateQuestion = (id, post, { signal } = {}) =>
+  request(`${QUESTION_URL}?id=eq.${id}`, {
     method: 'PATCH',
-    headers: { 
+    headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
     },
@@ -47,10 +47,10 @@ export const updatePost = (id, post, { signal } = {}) =>
   });
 
 /**
- * Delete an interview
+ * Delete a Question
  */
-export const deletePost = (id, { signal } = {}) =>
-  request(`${INTERVIEW_BASE_URL}?id=eq.${id}`, {
+export const deleteQuestion = (id, { signal } = {}) =>
+  request(`${QUESTION_URL}?id=eq.${id}`, {
     method: 'DELETE',
      headers: {
       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,

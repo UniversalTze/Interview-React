@@ -1,16 +1,16 @@
 /*
-Api for the Interview Endpoint
+Api for the Applicant Endpoint
 */
 import { BASE_URL } from './mainapi'
 
-const INTERVIEW_BASE_URL = `${BASE_URL}/interview`;
+const APPLICANT_URL = `${BASE_URL}/applicant`;
 
-/*
-Get all interviews
-*/
-export const getAllInterviews = ({ signal } = {}) => { 
-  request(INTERVIEW_BASE_URL, {
-    method: 'GET',  // optional, fetch defaults to GET
+/** 
+ * Get all applicants assoicated wiht an interview
+ */
+export const getAllApplicants = (id, { signal } = {}) => { 
+  request(`${APPLICANT_URL}?interview_id=eq.${id}`, {
+    method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
     headers: {
       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
     },
@@ -19,10 +19,10 @@ export const getAllInterviews = ({ signal } = {}) => {
 };
 
 /**
- * Create an Interview
+ * Create an Applicant
  */
-export const createPost = (post, { signal } = {}) =>
-  request(INTERVIEW_BASE_URL, {
+export const createApplicant = (post, { signal } = {}) =>
+  request(APPLICANT_URL, {
     method: 'POST',
     headers: { 
         'Content-Type': 'application/json',
@@ -33,10 +33,10 @@ export const createPost = (post, { signal } = {}) =>
   });
 
 /**
- * Update an Interview
+ * Update an Applicant
  */
-export const updatePost = (id, post, { signal } = {}) =>
-  request(`${BASE_URL}?id=eq.${id}`, {
+export const updateApplicant = (id, post, { signal } = {}) =>
+  request(`${APPLICANT_URL}?id=eq.${id}`, {
     method: 'PATCH',
     headers: { 
         'Content-Type': 'application/json',
@@ -47,10 +47,10 @@ export const updatePost = (id, post, { signal } = {}) =>
   });
 
 /**
- * Delete an interview
+ * Delete an Applicant
  */
-export const deletePost = (id, { signal } = {}) =>
-  request(`${INTERVIEW_BASE_URL}?id=eq.${id}`, {
+export const deleteApplicant = (id, { signal } = {}) =>
+  request(`${APPLICANT_URL}?id=eq.${id}`, {
     method: 'DELETE',
      headers: {
       'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`,
