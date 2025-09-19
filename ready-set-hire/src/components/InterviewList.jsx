@@ -1,6 +1,6 @@
 
 import { Link, useLoaderData } from "react-router-dom";
-import { deleteInterview, getAllInterviews } from "../apis/interviewapi";
+import { deleteInterview, updateInterview, getAllInterviews } from "../apis/interviewapi";
 import { getAllQuestions } from "../apis/questionsapi"
 import { getAllApplicants } from "../apis/applicantapi"
 
@@ -37,11 +37,22 @@ export default function InterviewList() {
 
   return (
     <div className="container mt-4">
-      <h2 className="text-start">Interviews</h2>
-      <p className="text-start">
-       Manage your Interview Campaigns
-      </p>
-
+      <div className="d-flex justify-content-between align-items-center mb-2">
+        <div className="text-start">
+          <h2 className="mb-0">Interviews</h2>
+          <p className="mb-0 text-muted">Manage your Interview Campaigns</p>
+        </div>
+         <Link 
+            to="/new-form" // update this to add/edit path @TODO
+            className="btn btn-dark btn-sm d-flex align-items-center justify-content-center"
+            style={{ width: "10rem", height: "3rem"}}
+            >
+             <span>
+              <i className="bi bi-plus-square me-2"></i> 
+              Create Interview
+            </span>
+            </Link>
+      </div>
       <div className="accordion" id="interviewAccordion">
         {interviews.map((interview, index) => (
           <div className="accordion-item" key={interview.id}>
@@ -62,15 +73,21 @@ export default function InterviewList() {
                     </span>
                 </div>
               </button>
+              <Link 
+                  to="/new-form" // update this to add/edit path @TODO
+                  className="btn btn-outline-info btn-sm ms-2 me-2"
+                >
+                  <i className="bi bi-chat-left-text-fill"></i>
+              </Link>
                <button
                      type="button"
-                     className="btn btn-outline-danger btn-sm ms-1 me-2"
+                     className="btn btn-outline-danger btn-sm ms-2 me-2"
                     onClick={() => 
                       deleteInterview(interview.id)
                     }
                   >
                     <i className="bi bi-trash-fill"></i>
-                    </button>
+                </button>
                 </div>
             </h2>
             <div
@@ -86,20 +103,20 @@ export default function InterviewList() {
              <div className="d-flex gap-2 justify-content-center">
               <Link
                   to="/questions"
-                  className="card p-2 align-items-center text-decoration-none text-dark justify-content-center"
+                  className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                   style={{ width: "12rem", height: "3rem"}}
                 >
-                  <span className="text-gray-800 text-muted">
+                  <span>
                     <i className="bi bi-question-square me-2"></i> 
                     Questions: ({interview.numQ})
                   </span>
                 </Link>
                 <Link
                   to="/applicants"
-                  className="card p-2 align-items-center text-decoration-none text-dark justify-content-center"
+                  className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                   style={{ width: "12rem", height: "3rem"}}
                 >
-                  <span className="text-gray-800 text-muted">
+                  <span>
                     <i className="bi bi-people-fill me-2"></i> 
                     Applicants: ({interview.numApp})
                   </span>
