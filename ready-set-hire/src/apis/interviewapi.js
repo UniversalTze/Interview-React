@@ -20,7 +20,7 @@ export const getAllInterviews = ({ signal } = {}) =>
 /**
  * Create an Interview
  */
-export const createPost = (post, { signal } = {}) =>
+export const createInterview = (post, { signal } = {}) =>
   request(INTERVIEW_BASE_URL, {
     method: 'POST',
     headers: { 
@@ -34,7 +34,7 @@ export const createPost = (post, { signal } = {}) =>
 /**
  * Update an Interview
  */
-export const updatePost = (id, post, { signal } = {}) =>
+export const updateInterview = (id, post, { signal } = {}) =>
   request(`${BASE_URL}?id=eq.${id}`, {
     method: 'PATCH',
     headers: { 
@@ -48,7 +48,7 @@ export const updatePost = (id, post, { signal } = {}) =>
 /**
  * Delete an interview
  */
-export const deletePost = (id, { signal } = {}) =>
+export const deleteInterview = (id, { signal } = {}) =>
   request(`${INTERVIEW_BASE_URL}?id=eq.${id}`, {
     method: 'DELETE',
      headers: {
