@@ -17,6 +17,15 @@ export const getAllInterviews = ({ signal } = {}) =>
     signal,
   });
 
+export const getSpecificInterview = (id, post, { signal } = {}) =>
+  request(`${INTERVIEW_BASE_URL}?id=eq.${id}`, {
+    method: 'GET',
+    headers: { 
+        'Authorization': `Bearer ${token}`,
+    },
+    signal
+  });
+
 /**
  * Create an Interview
  */
@@ -35,7 +44,7 @@ export const createInterview = (post, { signal } = {}) =>
  * Update an Interview
  */
 export const updateInterview = (id, post, { signal } = {}) =>
-  request(`${BASE_URL}?id=eq.${id}`, {
+  request(`${INTERVIEW_BASE_URL}?id=eq.${id}`, {
     method: 'PATCH',
     headers: { 
         'Content-Type': 'application/json',

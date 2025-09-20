@@ -8,14 +8,17 @@ const QUESTION_URL = `${BASE_URL}/question`;
 /** 
  * Get all questions assoicated wiht an interview
  */
-export const getAllQuestions = (id, { signal } = {}) =>
-  request(`${QUESTION_URL}?interview_id=eq.${id}`, {
+export async function getAllQuestions (id, { signal } = {}) {
+  const questions = await request(`${QUESTION_URL}?interview_id=eq.${id}`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
     headers: {
       'Authorization': `Bearer ${token}`,
     },
     signal,
   })
+  const difficultyOrder = { Easy: 1, Intermediate: 2, Advanced: 3 };
+  return questions.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+}
 
 /**
  * Create an Applicant
