@@ -1,3 +1,4 @@
+// Interview List for interview screen
 
 import { Link, useLoaderData } from "react-router-dom";
 import { deleteInterview, updateInterview, getAllInterviews } from "../apis/interviewapi";

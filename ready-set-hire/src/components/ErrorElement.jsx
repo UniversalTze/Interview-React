@@ -1,3 +1,4 @@
+// Used to represent an error if occured for easier debugging
 import { useRouteError } from "react-router-dom";
 
 function ErrorFallback() {

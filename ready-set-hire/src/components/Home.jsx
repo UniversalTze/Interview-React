@@ -1,3 +1,4 @@
+// Simple home page (may be added to if more time)
 import React from 'react';
 
 const Home = () => {
