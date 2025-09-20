@@ -19,9 +19,11 @@ export default function App() {
   ];
 
   return ( // (no footer currently) (outlet is child component of current root that you want to show)
-    <div className="App">
+    <div className="App d-flex flex-column min-vh-100">  {/* Create a flex box so that footer can be pushed down */}
       <Header rootName={rootName} navLinks={navLinks} />
-      <Outlet />
+       <main className="flex-grow-1">   {/* expands to push footer down */}
+        <Outlet />
+      </main>
       <Footer />
     </div>
   );

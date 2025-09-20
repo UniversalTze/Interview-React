@@ -10,7 +10,7 @@ export async function loader({ params, request }) {
   const questions = await getAllQuestions(params.id, { signal: request.signal });
   const interview = await getSpecificInterview(params.id, { signal: request.signal })
   if (!questions || !interview) throw new Response("Not Found", { status: 404 });
-  return { questions };
+  return { questions, interview };
 }
 
 function getQuestionDifficulty(status) {
@@ -25,7 +25,8 @@ function getQuestionDifficulty(status) {
 }
 
 export default function QuestionList() {
-  const { questions } = useLoaderData();
+  const { questions, interview } = useLoaderData();
+  const interviewName = interview[0].title // interview returns an array of one object.
   if (!questions || questions.length === 0) {
     return (
       <div className="container mt-4">
@@ -44,10 +45,22 @@ export default function QuestionList() {
   }
   return (
     <div className="container mt-4">
+       <div className="mb-3">
+         <Link 
+        to="/interviews" // update this to add/edit path @TODO
+        className="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
+        style={{ width: "10rem", height: "3rem"}}
+        >
+        <span>
+        <i className="bi bi-arrow-left-square-fill me-2"></i> 
+        Back To Interviews
+        </span>
+        </Link>
+      </div>
        <div className="d-flex justify-content-between align-items-center mb-2">
           <div className="text-start">
           <h2 className="mb-0">Questions</h2>
-          <p className="mb-0 text-muted">Questions for the interview: </p>
+          <p className="mb-0">For Interview: <span className="fw-bold">{interviewName}</span></p>
       </div>
        <Link 
         to="/new-form" // update this to add/edit path @TODO
