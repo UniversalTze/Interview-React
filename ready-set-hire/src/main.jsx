@@ -10,11 +10,11 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import About from "./components/About";
-import InterviewList, { loader as InterviewListLoader } from './components/InterviewList';
-import Home from "./components/Home"
+import About from "./pages/About";
+import InterviewList, { loader as InterviewListLoader } from './pages/InterviewList';
+import Home from "./pages/Home"
 import ErrorFallback from './components/ErrorElement';
-import QuestionList, { loader as QuestionLoader } from './components/QuestionList';
+import QuestionList, { loader as QuestionLoader } from './pages/QuestionList';
 
 const router = createBrowserRouter([
   {
