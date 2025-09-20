@@ -1,20 +1,21 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App, { loader as rootLoader } from "./App";
+import App, { loader as rootLoader } from './App';
 
-import React from "react";
-import ReactDOM from "react-dom/client";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import {
   createBrowserRouter,
   RouterProvider,
-} from "react-router-dom";
+} from 'react-router-dom';
 
-import About from "./pages/About";
+import About from './pages/About';
 import InterviewList, { loader as InterviewListLoader } from './pages/InterviewList';
 import Home from "./pages/Home"
 import ErrorFallback from './components/ErrorElement';
 import QuestionList, { loader as QuestionLoader } from './pages/QuestionList';
+import ApplicantList,{ loader as ApplicantLoader } from './pages/ApplicantList';
 
 const router = createBrowserRouter([
   {
@@ -26,7 +27,8 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "about", element: <About /> },
       { path: "interviews", element: <InterviewList />, loader: InterviewListLoader },
-      { path: "interviews/:id/questions", element: <QuestionList />, loader: QuestionLoader }
+      { path: "interviews/:id/questions", element: <QuestionList />, loader: QuestionLoader },
+      { path: "interviews/:id/applicants", element: <ApplicantList />, loader: ApplicantLoader },
     ],
   },
 ]);

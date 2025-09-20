@@ -4,6 +4,7 @@ import { Link, useLoaderData } from "react-router-dom";
 import { deleteInterview, getAllInterviews } from "../apis/interviewapi";
 import { getAllQuestions } from "../apis/questionsapi"
 import { getAllApplicants } from "../apis/applicantapi"
+import EmptyState from "../components/EmptyState";
 
 export async function loader({ request }) {
   const allinterviews = await getAllInterviews({ signal: request.signal });
@@ -62,7 +63,7 @@ export default function InterviewList() {
           </div>
           <Link 
               to="/new-form" // update this to add/edit path @TODO
-              className="btn btn-dark btn-sm d-flex align-items-center justify-content-center"
+              className="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
               style={{ width: "10rem", height: "3rem"}}
               >
               <span>
@@ -93,7 +94,7 @@ export default function InterviewList() {
               </button>
               <Link 
                   to="/new-form" // update this to add/edit path @TODO
-                  className="btn btn-outline-info btn-sm ms-2 me-2"
+                  className="btn btn-outline-dark btn-sm ms-2 me-2"
                   >
                   <i className="bi bi-chat-left-text-fill"></i>
               </Link>
@@ -130,7 +131,7 @@ export default function InterviewList() {
                   </span>
                   </Link>
                   <Link
-                  to="/applicants"
+                  to={`/interviews/${interview.id}/applicants`}
                   className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                   style={{ width: "12rem", height: "3rem"}}
                   >

@@ -2,7 +2,7 @@
 
 import { Link, useLoaderData } from "react-router-dom";
 import { getAllQuestions } from "../apis/questionsapi"
-import EmptyState from "./EmptyState";
+import EmptyState from "../components/EmptyState";
 
 
 export async function loader({ params, request }) {
