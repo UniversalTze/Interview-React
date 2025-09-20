@@ -49,7 +49,7 @@ export default function QuestionList() {
          <Link 
         to="/interviews" // update this to add/edit path @TODO
         className="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
-        style={{ width: "10rem", height: "3rem"}}
+        style={{ width: "11rem", height: "3rem"}}
         >
         <span>
         <i className="bi bi-arrow-left-square-fill me-2"></i> 
