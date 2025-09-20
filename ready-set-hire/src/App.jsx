@@ -17,7 +17,7 @@ export default function App() {
   const navLinks = [
     { path: "/", label: "Home" },
     { path: "/about", label: "About" },
-    { path: "/interview", label: "Interview" }
+    { path: "/interviews", label: "Interview" }
   ];
 
   return ( // (no footer currently) (outlet is child component of current root that you want to show)

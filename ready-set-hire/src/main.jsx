@@ -14,6 +14,7 @@ import About from "./components/About";
 import InterviewList, { loader as InterviewListLoader } from './components/InterviewList';
 import Home from "./components/Home"
 import ErrorFallback from './components/ErrorElement';
+import QuestionList, { loader as QuestionLoader } from './components/QuestionList';
 
 const router = createBrowserRouter([
   {
@@ -24,7 +25,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "about", element: <About /> },
-      { path: "interview", element: <InterviewList />, loader: InterviewListLoader },
+      { path: "interviews", element: <InterviewList />, loader: InterviewListLoader },
+      { path: "interviews/:id/questions", element: <QuestionList />, loader: QuestionLoader }
     ],
   },
 ]);

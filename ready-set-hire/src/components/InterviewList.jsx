@@ -1,7 +1,7 @@
 // Interview List for interview screen
 
 import { Link, useLoaderData } from "react-router-dom";
-import { deleteInterview, updateInterview, getAllInterviews } from "../apis/interviewapi";
+import { deleteInterview, getAllInterviews } from "../apis/interviewapi";
 import { getAllQuestions } from "../apis/questionsapi"
 import { getAllApplicants } from "../apis/applicantapi"
 
@@ -103,7 +103,7 @@ export default function InterviewList() {
                 <p className="mb-3 text-muted">{interview.description || "No description available."}</p>
              <div className="d-flex gap-2 justify-content-center">
               <Link
-                  to="/questions"
+                  to={`/interviews/${interview.id}/questions`}
                   className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                   style={{ width: "12rem", height: "3rem"}}
                 >
