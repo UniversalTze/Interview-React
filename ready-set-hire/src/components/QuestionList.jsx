@@ -18,9 +18,9 @@ export default function QuestionList() {
       <div className="container mt-4">
         <EmptyState
           title="No Questions Found"
-          description="You don’t have any questions yet. Start by adding one."
+          description="You don’t have any questions yet. Start by adding one to this interview." 
           action={
-            <Link to="/new" className="btn btn-primary">
+            <Link to="/new" className="btn btn-primary">  {/* change link here*/}
               Add Question
             </Link>
           }

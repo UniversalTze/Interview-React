@@ -41,14 +41,14 @@ export default function InterviewList() {
     return (
       <div className="container mt-4">
         <EmptyState
-          title="No Questions Found"
-          description="You don’t have any questions yet. Start by adding one."
+          title="No Interviews Found"
+          description="You don’t have any interviews yet. Start by adding one."
           action={
-            <Link to="/new" className="btn btn-primary">
-              Add Question
+            <Link to="/new" className="btn btn-primary"> {/* change link here*/}
+              Add Interviews
             </Link>
           }
-          type="question"
+          type="interview"
         />
       </div>
     );
