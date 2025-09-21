@@ -2,36 +2,76 @@
 
 import { Link, useLoaderData } from "react-router-dom";
 import { deleteApplicant, getAllApplicants } from "../apis/applicantapi"
-import { getSpecificInterview } from "../apis/interviewapi";
+import { getApplicantAnswersSpecInt } from "../apis/applicantansapi"
+import { getAllQuestions } from "../apis/questionsapi";
 import EmptyState from "../components/EmptyState";
 
 
 export async function loader({ params, request }) {
+  // params.id here is the specific interview.
   const applicants = await getAllApplicants(params.id, { signal: request.signal });
-  const interview = await getSpecificInterview(params.id, { signal: request.signal })
-  if (!applicants || !interview) throw new Response("Not Found", { status: 404 });
+  const interviewQues = await getAllQuestions(params.id,  { signal: request.signal});
+    // query params
+  const url = new URL(request.url);
+  const interviewtitle = url.searchParams.get("title");
 
-  return { applicants, interview };
+  if (!applicants || !interviewQues) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  const numofInterviewques = interviewQues.length
+  const applicantsdata = await Promise.all(    // returns an array of unresolved promises. When resolved it is interview project with 
+      applicants.map(async (applicant) => {     // question and applicant count. 
+        const applicantAnsSpecInt = await getApplicantAnswersSpecInt(applicant.id, params.id, { signal: request.signal });
+        const numberofApplicantsAns =  applicantAnsSpecInt.length
+        const applicantstatus = determineApplicantStatus(numofInterviewques, numberofApplicantsAns);
+
+        return { ...applicant,   // returns value that goes into array, then goes to next callback
+                numQuesAnswered: numberofApplicantsAns,
+                applicantStatus: applicantstatus
+        };
+      })
+  );
+  
+  return { applicantsdata, interviewtitle, numofInterviewques };
+}
+
+function determineApplicantStatus(numberofQuestions, questionsAnswered) {
+  if (numberofQuestions === questionsAnswered) { 
+    return "Completed";
+  } else if (!questionsAnswered) { 
+    return "Not-Started";
+  } else 
+    return "In-Progress";
+}
+
+function getStatusColour(status) {
+  switch(status) {
+    case "Not-Started":
+      return "bg-danger";
+    case "Completed":
+      return "bg-success";
+    default:
+      return "bg-warning";
+  }
 }
 
 export default function ApplicantList() {
-  const { applicants, interview } = useLoaderData();
-  const interviewName = interview[0].title // interview returns an array of one object.
+  const { applicantsdata: applicants, interviewtitle, numofInterviewques} = useLoaderData();
 
-    if (!applicants || applicants.length === 0) {
-    return (
-      <div className="container mt-4">
-        <EmptyState
-          title="No Applicants Found"
-          description="You don’t have any applicants  yet. Start by adding one to this interview."
-          action={
-            <Link to="/new" className="btn btn-primary">   {/* change link here*/}
-              Add Applicant
-            </Link>
-          }
-          type="applicants"
-        />
-      </div>
+  if (!applicants || applicants.length === 0) {
+  return (
+    <div className="container mt-4">
+      <EmptyState
+        title="No Applicants Found"
+        description="You don’t have any applicants  yet. Start by adding one to this interview."
+        action={
+          <Link to="/new" className="btn btn-primary">   {/* change link here*/}
+            Add Applicant
+          </Link>
+        }
+        type="applicants"
+      />
+    </div>
     );
   }
   return (
@@ -51,7 +91,7 @@ export default function ApplicantList() {
         <div className="d-flex justify-content-between align-items-center mb-2">
             <div className="text-start">
             <h2 className="mb-0">Applicants</h2>
-            <p className="mb-0 text-muted">For Interview: {interviewName}</p>
+            <p className="mb-0 text-muted">For Interview: {interviewtitle}</p>
             </div>
             <Link 
                 to="/new-form" // update this to add/edit path @TODO
@@ -79,6 +119,9 @@ export default function ApplicantList() {
                 >
                     <div className="align-items-center w-100 justify-content-start">
                     <span className="fw-bold">{applicant.firstname} {applicant.surname}</span>
+                    <span className={`badge ${getStatusColour(applicant.applicantStatus)} ms-2`}>
+                      {applicant.applicantStatus}
+                      </span>
                     </div>
                 </button>
                 <Link 
@@ -111,7 +154,8 @@ export default function ApplicantList() {
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone Number</th>
-                        <th>Status</th>
+                        <th>Questions Completed</th>
+                        <th>Questions Remaining</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -119,10 +163,29 @@ export default function ApplicantList() {
                           <td>{applicant.title} {applicant.firstname} {applicant.surname}</td>
                           <td>{applicant.email_address}</td>
                           <td>{applicant.phone_number}</td>
-                          <td>{applicant.interview_status}</td> {/*maybe instead of status have actions here and have status in the bar up there*/}
+                          <td>{applicant.numQuesAnswered}</td>
+                          <td>{numofInterviewques - applicant.numQuesAnswered}</td> {/*maybe instead of status have actions here and have status in the bar up there*/}
                         </tr>
                     </tbody>
                   </table>
+                
+                <div className="d-flex justify-content-center align-items-center gap-3">
+                  <span>
+                    {applicant.applicantStatus === "Completed"
+                      ? "View Answers:"
+                      : "Please complete your interview:"}
+                  </span>
+                   {/* take interview link here for Link! @TODO */}
+                  <Link   
+                      to={applicant.applicantStatus === "Completed" ? 
+                          `/applicant_answer/${applicant.id}` 
+                          : `/take-interview/${applicant.id}`}
+                      className="btn btn-primary d-flex justify-content-center align-items-center"
+                      style={{ width: "10rem", height: "2rem"}}
+                    >
+                      {applicant.applicantStatus === "Completed"  ? "View Answers" : "Take Interview"}
+                    </Link>
+                </div>
                 </div>
                 </div>
             </div>
