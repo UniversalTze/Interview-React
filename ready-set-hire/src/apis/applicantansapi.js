@@ -6,10 +6,22 @@ import request, { BASE_URL, token } from './mainapi'
 const APPLICANT_ANS_URL = `${BASE_URL}/applicant_answer`;
 
 /** 
- * Get all answers assoicated wiht an applicant
+ * Get all answers assoicated wiht an applicant and interview
  */
-export const getAllApplicantAnswers = (id, { signal } = {}) =>
-  request(`${APPLICANT_ANS_URL}?applicant_id=eq.${id}`, {
+export const getApplicantAnswersSpecInt = (applicantid, interviewid,  { signal } = {}) =>
+  request(`${APPLICANT_ANS_URL}?applicant_id=eq.${applicantid}&interview_id=eq.${interviewid}&order=id.asc`, {
+    method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    signal,
+  });
+
+/**
+ * Get all applicants answers
+ */
+export const getAllApplicantAnswers = (applicantid,  { signal } = {}) =>
+  request(`${APPLICANT_ANS_URL}?applicant_id=eq.${applicantid}&order=id.asc`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
     headers: {
       'Authorization': `Bearer ${token}`,
