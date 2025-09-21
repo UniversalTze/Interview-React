@@ -1,6 +1,7 @@
 // ApplicantList used to represent applicants associated with a interview.
 
 import { Link, useLoaderData } from "react-router-dom";
+import React, {useState } from "react";
 import { deleteApplicant, getAllApplicants } from "../apis/applicantapi"
 import { getApplicantAnswersSpecInt } from "../apis/applicantansapi"
 import { getAllQuestions } from "../apis/questionsapi";
@@ -56,7 +57,14 @@ function getStatusColour(status) {
 }
 
 export default function ApplicantList() {
-  const { applicantsdata: applicants, interviewtitle, numofInterviewques} = useLoaderData();
+  const { applicantsdata, interviewtitle, numofInterviewques} = useLoaderData();
+  
+  const [applicants, setApplicants] = useState(applicantsdata);
+  
+  const handleDeleteApplicants = async(applicantID) => {
+    await deleteApplicant(applicantID); // API call
+    setApplicants(prev => prev.filter(i => i.id !== applicantID)); // remove from state
+  }
 
   if (!applicants || applicants.length === 0) {
   return (
@@ -133,8 +141,7 @@ export default function ApplicantList() {
                 <button
                         type="button"
                         className="btn btn-outline-danger btn-sm ms-2 me-2"
-                        onClick={() => 
-                        deleteApplicant(applicant.id)
+                        onClick={() => handleDeleteApplicants(applicant.id)
                         }
                     >
                         <i className="bi bi-trash-fill"></i>

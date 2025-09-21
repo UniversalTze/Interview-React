@@ -39,7 +39,7 @@ export default function InterviewList() {
   const { interviewsMetadata } = useLoaderData();
   const [interviews, setInterviews] = useState(interviewsMetadata);
 
-  const handleDelete = async(interviewID) => {
+  const handleDeleteInterview = async(interviewID) => {
     await deleteInterview(interviewID); // API call
     setInterviews(prev => prev.filter(i => i.id !== interviewID)); // remove from state
   }
@@ -108,7 +108,7 @@ export default function InterviewList() {
               <button
                       type="button"
                       className="btn btn-outline-danger btn-sm ms-2 me-2"
-                      onClick={() => handleDelete(interview.id)}
+                      onClick={() => handleDeleteInterview(interview.id)}
                   >
                       <i className="bi bi-trash-fill"></i>
                   </button>
@@ -131,7 +131,7 @@ export default function InterviewList() {
                   style={{ width: "12rem", height: "3rem"}}
                   >
                   <span>
-                      <i className="bi bi-question-square me-2"></i> 
+                      <i className="bi bi-question-square-fill me-2"></i> 
                       Questions: ({interview.numQ})
                   </span>
                   </Link>

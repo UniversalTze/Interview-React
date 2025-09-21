@@ -2,16 +2,16 @@
 
 import { Link, useLoaderData } from "react-router-dom";
 import { getAllQuestions, deleteQuestion } from "../apis/questionsapi";
-import { getSpecificInterview } from "../apis/interviewapi";
 import EmptyState from "../components/EmptyState";
+import React,{ useState } from "react";
 
 
 export async function loader({ params, request }) {
-  const questions = await getAllQuestions(params.id, { signal: request.signal });
+  const questionsdata = await getAllQuestions(params.id, { signal: request.signal });
   const url = new URL(request.url);
   const interviewtitle = url.searchParams.get("title");
-  if (!questions) throw new Response("Not Found", { status: 404 });
-  return { questions, interviewtitle };
+  if (!questionsdata) throw new Response("Not Found", { status: 404 });
+  return { questionsdata, interviewtitle };
 }
 
 function getQuestionDifficulty(status) {
@@ -26,7 +26,14 @@ function getQuestionDifficulty(status) {
 }
 
 export default function QuestionList() {
-  const { questions, interviewtitle } = useLoaderData();
+  const { questionsdata, interviewtitle } = useLoaderData();
+
+  const [questions, setQuestions] = useState(questionsdata);
+  const handleDeleteQuestion = async(questionID) => {
+      await deleteQuestion(questionID); // API call
+      setQuestions(prev => prev.filter(i => i.id !== questionID)); // remove from state
+  }
+
   if (!questions || questions.length === 0) {
     return (
       <div className="container mt-4">
@@ -83,12 +90,12 @@ export default function QuestionList() {
           </tr>
         </thead>
         <tbody>
-          {questions.map((q, index) => (
+          {questions.map((quest, index) => (
             <tr className="text-start" key={index}>
-              <td>{q.question}</td>
+              <td>{quest.question}</td>
               <td>
-                <span className={`badge ${getQuestionDifficulty(q.difficulty)}`}>
-                  {q.difficulty}
+                <span className={`badge ${getQuestionDifficulty(quest.difficulty)}`}>
+                  {quest.difficulty}
                   </span>
                   </td>
               <td className="align-items-center justify-content-center text-center">
@@ -101,9 +108,7 @@ export default function QuestionList() {
                  <button
                   type="button"
                   className="btn btn-outline-danger btn-sm me-2"
-                  onClick={() => 
-                  deleteQuestion(q.id)
-                  }
+                  onClick={() => handleDeleteQuestion(quest.id)}
               >
                   <i className="bi bi-trash-fill"></i>
               </button>
