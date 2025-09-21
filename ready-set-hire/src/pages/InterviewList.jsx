@@ -26,7 +26,7 @@ export async function loader({ request }) {
 function getStatusBadgeClass(status) {
   switch(status) {
     case "Draft":
-      return "bg-warning text-dark";
+      return "bg-warning";
     case "Published":
       return "bg-success";
     default:
@@ -121,7 +121,7 @@ export default function InterviewList() {
                   <p className="mb-3 text-muted">{interview.description || "No description available."}</p>
               <div className="d-flex gap-2 justify-content-center">
               <Link
-                  to={`/interviews/${interview.id}/questions`}
+                  to={`/interviews/${interview.id}/questions?title=${encodeURIComponent(interview.title)}`}
                   className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                   style={{ width: "12rem", height: "3rem"}}
                   >
@@ -131,7 +131,7 @@ export default function InterviewList() {
                   </span>
                   </Link>
                   <Link
-                  to={`/interviews/${interview.id}/applicants`}
+                  to={`/interviews/${interview.id}/applicants?title=${encodeURIComponent(interview.title)}`}
                   className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                   style={{ width: "12rem", height: "3rem"}}
                   >

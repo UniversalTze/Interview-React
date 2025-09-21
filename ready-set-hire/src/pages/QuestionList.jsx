@@ -8,9 +8,10 @@ import EmptyState from "../components/EmptyState";
 
 export async function loader({ params, request }) {
   const questions = await getAllQuestions(params.id, { signal: request.signal });
-  const interview = await getSpecificInterview(params.id, { signal: request.signal })
-  if (!questions || !interview) throw new Response("Not Found", { status: 404 });
-  return { questions, interview };
+  const url = new URL(request.url);
+  const interviewtitle = url.searchParams.get("title");
+  if (!questions) throw new Response("Not Found", { status: 404 });
+  return { questions, interviewtitle };
 }
 
 function getQuestionDifficulty(status) {
@@ -25,8 +26,7 @@ function getQuestionDifficulty(status) {
 }
 
 export default function QuestionList() {
-  const { questions, interview } = useLoaderData();
-  const interviewName = interview[0].title // interview returns an array of one object.
+  const { questions, interviewtitle } = useLoaderData();
   if (!questions || questions.length === 0) {
     return (
       <div className="container mt-4">
@@ -60,7 +60,7 @@ export default function QuestionList() {
        <div className="d-flex justify-content-between align-items-center mb-2">
           <div className="text-start">
           <h2 className="mb-0">Questions</h2>
-          <p className="mb-0">For Interview: <span className="fw-bold">{interviewName}</span></p>
+          <p className="mb-0">For Interview: <span className="fw-bold">{interviewtitle}</span></p>
       </div>
        <Link 
         to="/new-form" // update this to add/edit path @TODO
