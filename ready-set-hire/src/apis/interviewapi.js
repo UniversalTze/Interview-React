@@ -9,7 +9,7 @@ const INTERVIEW_BASE_URL = `${BASE_URL}/interview`;
 Get all interviews
 */
 export const getAllInterviews = ({ signal } = {}) =>
-  request(INTERVIEW_BASE_URL, {
+  request(`${INTERVIEW_BASE_URL}?order=id.asc`, {
     method: 'GET',  // optional, fetch defaults to GET
     headers: {
       'Authorization': `Bearer ${token}`,
