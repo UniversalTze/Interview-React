@@ -45,7 +45,7 @@ export default function InterviewList() {
           title="No Interviews Found"
           description="You don’t have any interviews yet. Start by adding one."
           action={
-            <Link to="/new" className="btn btn-primary"> {/* change link here*/}
+            <Link to="/newinterview" className="btn btn-primary"> {/* change link here*/}
               Add Interviews
             </Link>
           }
@@ -62,7 +62,7 @@ export default function InterviewList() {
           <p className="mb-0 text-muted">Manage your Interview Campaigns</p>
           </div>
           <Link 
-              to="/new-form" // update this to add/edit path @TODO
+              to="/newinterview"
               className="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
               style={{ width: "10rem", height: "3rem"}}
               >

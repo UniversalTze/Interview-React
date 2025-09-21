@@ -47,7 +47,7 @@ export default function QuestionList() {
     <div className="container-fluid px-5 my-4">
        <div className="mb-3">
          <Link 
-        to="/interviews" // update this to add/edit path @TODO
+        to="/interviews"
         className="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
         style={{ width: "11rem", height: "3rem"}}
         >
