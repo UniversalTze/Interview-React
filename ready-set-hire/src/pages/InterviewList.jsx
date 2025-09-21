@@ -55,7 +55,7 @@ export default function InterviewList() {
     );
   }   
   return (
-      <div className="container mt-4">
+      <div className="container-fluid px-5 my-4">
       <div className="d-flex justify-content-between align-items-center mb-2">
           <div className="text-start">
           <h2 className="mb-0">Interviews</h2>

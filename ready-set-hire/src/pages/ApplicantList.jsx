@@ -75,7 +75,7 @@ export default function ApplicantList() {
     );
   }
   return (
-        <div className="container mt-4">
+        <div className="container-fluid px-5 my-4">
            <div className="mb-3">
          <Link 
         to="/interviews" // update this to add/edit path @TODO

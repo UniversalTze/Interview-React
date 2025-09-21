@@ -44,7 +44,7 @@ export default function QuestionList() {
     );
   }
   return (
-    <div className="container mt-4">
+    <div className="container-fluid px-5 my-4">
        <div className="mb-3">
          <Link 
         to="/interviews" // update this to add/edit path @TODO
@@ -65,7 +65,7 @@ export default function QuestionList() {
        <Link 
         to="/new-form" // update this to add/edit path @TODO
         className="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
-        style={{ width: "10rem", height: "2rem"}}
+        style={{ width: "11rem", height: "3rem"}}
         >
         <span>
         <i className="bi bi-plus-square me-2"></i> 
