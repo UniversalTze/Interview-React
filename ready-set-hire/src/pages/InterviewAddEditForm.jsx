@@ -1,4 +1,4 @@
-import { Link, useLoaderData, Form, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { getSpecificInterview,  updateInterview, createInterview } from "../apis/interviewapi";
 import { BaseAddEditForm } from "../components/BaseAddEditForm";
 
@@ -12,10 +12,13 @@ export async function loader({ params, request }) {
 
 // One action for both /new and /edit/:id
 export async function action({ request, params }) {
-  const form = await request.formData();
+  const form = await request.formData(); // submitted form data
   const payload = {
-    title: form.get("title"), // have to be changed.
-    body: form.get("body"),
+    title: form.get("title"),
+    job_role: form.get("jobRole"),
+    description: form.get("description"),
+    status: form.get("status"),
+    username: "s4703754"
   };
 
   if (params.id) {
@@ -111,14 +114,10 @@ export default function InterviewAddEditForm() {
                 className="form-select"
                 defaultValue={interviewmetada.status ?? "DRAFT"}
               >
-                <option value="DRAFT">Draft</option>
-                <option value="PUBLISHED">Published</option>
+                <option value="Draft">Draft</option>
+                <option value="Publihsed">Published</option>
+                 <option value="Archived">Archived</option>
               </select>
-            </div>
-            <div className="mb-3">
-              <span className="text-start">
-                <p className="fw-bold"> (*) indicates mandatory fields</p>
-              </span>
             </div>
           </BaseAddEditForm>
         </div>
