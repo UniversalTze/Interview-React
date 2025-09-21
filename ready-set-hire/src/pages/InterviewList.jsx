@@ -1,6 +1,7 @@
 // Interview List for interview screen
 
 import { Link, useLoaderData } from "react-router-dom";
+import React, { useState } from "react";
 import { deleteInterview, getAllInterviews } from "../apis/interviewapi";
 import { getAllQuestions } from "../apis/questionsapi"
 import { getAllApplicants } from "../apis/applicantapi"
@@ -35,7 +36,13 @@ function getStatusBadgeClass(status) {
 }
 
 export default function InterviewList() {
-  const { interviewsMetadata: interviews } = useLoaderData();
+  const { interviewsMetadata } = useLoaderData();
+  const [interviews, setInterviews] = useState(interviewsMetadata);
+
+  const handleDelete = async(interviewID) => {
+    await deleteInterview(interviewID); // API call
+    setInterviews(prev => prev.filter(i => i.id !== interviewID)); // remove from state
+  }
 
   // empty component
    if (!interviews || interviews.length === 0) {
@@ -101,9 +108,7 @@ export default function InterviewList() {
               <button
                       type="button"
                       className="btn btn-outline-danger btn-sm ms-2 me-2"
-                      onClick={() => 
-                      deleteInterview(interview.id)
-                      }
+                      onClick={() => handleDelete(interview.id)}
                   >
                       <i className="bi bi-trash-fill"></i>
                   </button>
