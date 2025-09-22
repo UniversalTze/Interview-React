@@ -17,6 +17,7 @@ import ErrorFallback from './components/ErrorElement';
 import QuestionList, { loader as QuestionLoader } from './pages/QuestionList';
 import ApplicantList,{ loader as ApplicantLoader } from './pages/ApplicantList';
 import InterviewAddEditForm, { loader as InterviewEditLoader, action as InterviewAddEditAction } from './pages/InterviewAddEditForm';
+import QuestionAddEditForm , {loader as QuestionEditLoader, action as QuestionAddEditAction } from './pages/QuestionAddEditForm';
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,8 @@ const router = createBrowserRouter([
       { path: "interviews/:id/questions", element: <QuestionList />, loader: QuestionLoader },
       { path: "interviews/:id/applicants", element: <ApplicantList />, loader: ApplicantLoader },
       { path: "interviews/edit/:id", element: <InterviewAddEditForm />, loader: InterviewEditLoader, action: InterviewAddEditAction },
-      { path: "newinterview", element: <InterviewAddEditForm />, action: InterviewAddEditAction },
+      { path: "interviews/new", element: <InterviewAddEditForm />, action: InterviewAddEditAction },
+      { path: "interviews/:id/questions/new", element: <QuestionAddEditForm />, action: QuestionAddEditAction },
     ],
   },
 ]);

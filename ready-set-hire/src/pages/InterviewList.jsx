@@ -69,7 +69,7 @@ export default function InterviewList() {
           <p className="mb-0 text-muted">Manage your Interview Campaigns</p>
           </div>
           <Link 
-              to="/newinterview"
+              to="new"
               className="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
               style={{ width: "10rem", height: "3rem"}}
               >

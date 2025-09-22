@@ -117,7 +117,7 @@ export default function InterviewAddEditForm() {
                 defaultValue={interviewmetada.status ?? "DRAFT"}
               >
                 <option value="Draft">Draft</option>
-                <option value="Publihsed">Published</option>
+                <option value="Published">Published</option>
                  <option value="Archived">Archived</option>
               </select>
             </div>
