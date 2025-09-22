@@ -10,8 +10,9 @@ export async function loader({ params, request }) {
   const questionsdata = await getAllQuestions(params.id, { signal: request.signal });
   const url = new URL(request.url);
   const interviewtitle = url.searchParams.get("title");
+  const interviewid = params.id;
   if (!questionsdata) throw new Response("Not Found", { status: 404 });
-  return { questionsdata, interviewtitle };
+  return { questionsdata, interviewtitle, interviewid };
 }
 
 function getQuestionDifficulty(status) {
@@ -26,7 +27,7 @@ function getQuestionDifficulty(status) {
 }
 
 export default function QuestionList() {
-  const { questionsdata, interviewtitle } = useLoaderData();
+  const { questionsdata, interviewtitle, interviewid } = useLoaderData();
 
   const [questions, setQuestions] = useState(questionsdata);
   const handleDeleteQuestion = async(questionID) => {
@@ -41,7 +42,7 @@ export default function QuestionList() {
           title="No Questions Found"
           description="You don’t have any questions yet. Start by adding one to this interview." 
           action={
-            <Link to="/new" className="btn btn-primary">  {/* change link here*/}
+            <Link to={`/interviews/${interviewid}/questions/new`} className="btn btn-primary">
               Add Question
             </Link>
           }
@@ -70,7 +71,7 @@ export default function QuestionList() {
           <p className="mb-0">For Interview: <span className="fw-bold">{interviewtitle}</span></p>
       </div>
        <Link 
-        to="/new-form" // update this to add/edit path @TODO
+        to={`/interviews/${interviewid}/questions/new`}
         className="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
         style={{ width: "11rem", height: "3rem"}}
         >
@@ -100,7 +101,7 @@ export default function QuestionList() {
                   </td>
               <td className="align-items-center justify-content-center text-center">
                  <Link 
-                  to="/new-form" // update this to add/edit path @TODO
+                  to={`/interviews/${interviewid}/questions/${quest.id}/edit`}
                   className="btn btn-outline-dark btn-sm me-2"
                   >
                   <i className="bi bi-chat-left-text-fill"></i>

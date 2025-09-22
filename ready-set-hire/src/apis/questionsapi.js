@@ -20,6 +20,21 @@ export async function getAllQuestions (id, { signal } = {}) {
   return questions.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
 }
 
+/** 
+ * Get specific question  associated with an interview
+ */
+export async function getSpecificQuestion (interviewid, questionid, { signal } = {}) {
+  const questions = await request(`${QUESTION_URL}?interview_id=eq.${interviewid}&id=eq.${questionid}`, {
+    method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    signal,
+  })
+  const difficultyOrder = { Easy: 1, Intermediate: 2, Advanced: 3 };
+  return questions.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+}
+
 /**
  * Create an Applicant
  */
