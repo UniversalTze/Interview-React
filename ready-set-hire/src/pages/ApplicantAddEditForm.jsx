@@ -20,7 +20,7 @@ export async function action({ request, params }) {
   const payload = {
     interview_id: params.interviewid,
     title: form.get("title"),
-    fistname: form.get("firstname"),
+    firstname: form.get("firstname"),
     surname: form.get("surname"),
     phone_number: form.get("phone_number"),
     email_address: form.get("email_address"),
@@ -29,12 +29,11 @@ export async function action({ request, params }) {
 
   };
 
-  if (params.questionid) {
-    payload.id = params.questionid;
+  if (params.applicantid) {
+    payload.id = params.applicantid;
     await updateApplicant(params.applicantid, payload, { signal: request.signal });
     return redirect(`/interviews/${params.interviewid}/applicants`);
   } else {
-    console.log(payload);
     const created = await createApplicant(payload, { signal: request.signal });
     return redirect(`/interviews/${params.interviewid}/applicants`);
   }

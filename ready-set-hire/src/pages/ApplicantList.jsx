@@ -39,11 +39,13 @@ export async function loader({ params, request }) {
 }
 
 function determineApplicantStatus(numberofQuestions, questionsAnswered) {
-  if (numberofQuestions === questionsAnswered) { 
+  if (numberofQuestions === questionsAnswered && numberofQuestions != 0) { 
     return "Completed";
+  } else if (numberofQuestions === 0) { 
+    return "No Question Added";
   } else if (!questionsAnswered) { 
     return "Not-Started";
-  } else 
+  } else
     return "In-Progress";
 }
 
@@ -53,6 +55,8 @@ function getStatusColour(status) {
       return "bg-danger";
     case "Completed":
       return "bg-success";
+    case "No Questions Added":
+      return "bg-info";
     default:
       return "bg-warning";
   }
@@ -76,7 +80,7 @@ export default function ApplicantList() {
         title="No Applicants Found"
         description="You don’t have any applicants  yet. Start by adding one to this interview."
         action={
-          <Link to={`/interviews/${interview.id}/applicants/new`} className="btn btn-primary">   {/* change link here*/}
+          <Link to={`/interviews/${interview.id}/applicants/new`} className="btn btn-primary">
             Add Applicant
           </Link>
         }
@@ -136,7 +140,7 @@ export default function ApplicantList() {
                 </div>
               </button>
             <Link 
-                to={`interviews/:interviewid/applicants/:applicantid/edit`}
+                to={`/interviews/${interview.id}/applicants/${applicant.id}/edit`}
                 className="btn btn-outline-dark btn-sm ms-2 me-2"
                 >
                 <i className="bi bi-chat-left-text-fill"></i>
@@ -185,11 +189,10 @@ export default function ApplicantList() {
                   ? "View Answers:"
                   : "Please complete your interview:"}
               </span>
-               {/* take interview link here for Link! and link for answer @TODO */}
               <Link   
                   to={applicant.applicantStatus === "Completed" ? 
-                      `/applicant_answer/${applicant.id}`  
-                      : `/take-interview/${applicant.id}`}
+                      `/interviews/${interview.id}/applicant/${applicant.id}/answer`
+                      : `/interviews/${interview.id}/applicant/${applicant.id}/take-interview/`}
                   className="btn btn-primary d-flex justify-content-center align-items-center"
                   style={{ width: "10rem", height: "2rem"}}
                 >
