@@ -23,6 +23,7 @@ export async function action({ request, params }) {
   };
 
   if (params.id) {
+    payload.id = params.id; // add id for update
     await updateInterview(params.id, payload, { signal: request.signal });
     return redirect(`/interviews`);
   } else {
