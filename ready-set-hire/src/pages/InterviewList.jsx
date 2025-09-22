@@ -100,7 +100,7 @@ export default function InterviewList() {
                   </div>
               </button>
               <Link 
-                  to="/new-form" // update this to add/edit path @TODO
+                  to={`edit/${interview.id}`} // update this to add/edit path @TODO
                   className="btn btn-outline-dark btn-sm ms-2 me-2"
                   >
                   <i className="bi bi-chat-left-text-fill"></i>

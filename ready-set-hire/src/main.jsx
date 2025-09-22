@@ -30,7 +30,7 @@ const router = createBrowserRouter([
       { path: "interviews", element: <InterviewList />, loader: InterviewListLoader },
       { path: "interviews/:id/questions", element: <QuestionList />, loader: QuestionLoader },
       { path: "interviews/:id/applicants", element: <ApplicantList />, loader: ApplicantLoader },
-      { path: "interviewedit/:id", element: <InterviewAddEditForm />, loader: InterviewEditLoader, action: InterviewAddEditAction },
+      { path: "interviews/edit/:id", element: <InterviewAddEditForm />, loader: InterviewEditLoader, action: InterviewAddEditAction },
       { path: "newinterview", element: <InterviewAddEditForm />, action: InterviewAddEditAction },
     ],
   },

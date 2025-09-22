@@ -4,9 +4,10 @@ import { BaseAddEditForm } from "../components/BaseAddEditForm";
 
 export async function loader({ params, request }) {
   if (!params.id) return null;   
-  const interview = await getSpecificInterview(params.id,  { signal: request.signal });
-  if (!interview) throw new Response("Not Found", { status: 404 });
+  const interviewarr = await getSpecificInterview(params.id,  { signal: request.signal });
+  if (!interviewarr) throw new Response("Not Found", { status: 404 });
   // Information about interview
+  const interview = interviewarr[0]; //index into array
   return { interview };
 }
 
@@ -84,7 +85,7 @@ export default function InterviewAddEditForm() {
                 required
                 className="form-control"
                 placeholder="Job Role"
-                defaultValue={interviewmetada.jobRole ?? ""}
+                defaultValue={interviewmetada.job_role ?? ""}
               />
             </div>
 
