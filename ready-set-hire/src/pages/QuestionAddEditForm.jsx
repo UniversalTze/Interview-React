@@ -66,10 +66,9 @@ export default function QuestionAddEditForm() {
             submitLabel={isEdit ? "Update" : "Add Question"}
             cancel={() => navigate(-1)}
           >
-             <div className="mt-3 mb-3">
-              <span className="text-start">
-              <span>For Interview: <p className="fw-bold"> {interviewdata.title}</p></span>
-              </span>
+          <div className="mt-3 mb-1 text-start">
+              For Interview:<br />
+              <span className="fw-bold"> {interviewdata.title}</span>
           </div>
             <div className="mb-3">
               <label htmlFor="question" className="form-label">

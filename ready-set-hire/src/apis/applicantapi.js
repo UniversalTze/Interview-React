@@ -18,6 +18,18 @@ export const getAllApplicants = (id, { signal } = {}) =>
   });
 
 /**
+ * Get specific applicant associated with an interview
+ */
+export const getSpecificApplicants = (interviewid, applicantid, { signal } = {}) => 
+  request(`${APPLICANT_URL}?interview_id=eq.${interviewid}&id=eq.${applicantid}&order=id.asc`, {
+    method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    signal,
+  });
+
+/**
  * Create an Applicant
  */
 export const createApplicant = (post, { signal } = {}) =>
