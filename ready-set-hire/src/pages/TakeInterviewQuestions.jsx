@@ -1,9 +1,11 @@
 import { Link, useLoaderData, redirect, useNavigate } from "react-router-dom";
-import React, { use, useMemo, useState } from "react";
+import React, { use, useMemo, useState, useRef } from "react";
 import { getSpecificApplicants } from "../apis/applicantapi";
 import { getSpecificInterview } from "../apis/interviewapi";
 import { getAllQuestions, getFirstQuestion } from "../apis/questionsapi";
 import { createApplicantAnswer } from "../apis/applicantansapi";
+import { getTranscriber } from '../ai';
+import { read_audio } from '@huggingface/transformers'; // Utility to decode audio Blob → Float32Array
 
 export async function loader({ params, request }) {
   let applicantarr = null;
@@ -12,40 +14,129 @@ export async function loader({ params, request }) {
   }
   applicantarr = await getSpecificApplicants(params.interviewid, params.applicantid, { signal: request.signal });
   const questionsarr = await getAllQuestions(params.interviewid, { signal: request.signal });
-  const firstquestion = await getFirstQuestion(params.interviewid, { signal: request.signal });
+  const interviewarr = await getSpecificInterview(params.interviewid,  { signal: request.signal });
 
-  if (!applicantarr || !questionsarr) { 
+  if (!applicantarr || !questionsarr || !interviewarr) { 
      throw new Response("Not Found", { status: 404 });
   }
-  return { applicantarr, questionsarr, firstquestion };
+  return { applicantarr, questionsarr, interviewarr };
 }
+
+
 
 export default function TakeInterviewQuestions() {
   const data = useLoaderData();
   const navigate = useNavigate();
-  const firstquestion = data.firstquestion;
-  const questionCount = 0;
+
+  const interview = data.interviewarr[0] || {};  // error safety
+  const applicant = data.applicantarr[0] || {};  // error safety
+  const questions = data.questionsarr || [];
+  const [index, setIndex] = useState(0);
+  const question = questions[index];  
   const numberofQuestions = data.questionsarr.length
+
   // Use memo react feature to cache / memoize values that are calcuted and re-renders if numbers are changed. 
   const percent = useMemo(() => { if (numberofQuestions === 0) return 0;
-    return Math.round(((questionCount + 1) / numberofQuestions) * 100);
-  }, [questionCount, numberofQuestions]);
-  
-  const [isRecording, setIsRecording] = useState(false);  // for recording button
-  const toggleRecording = () => 
-     setIsRecording((record) => {
-        const toggleRec = !record; 
-        if (!toggleRec) {
-            setRecorded(true);
-        }
-        return toggleRec;
-    });
+    return Math.round(((index + 1) / numberofQuestions) * 100);
+  }, [index, numberofQuestions]);
 
+  const [status, setStatus] = useState("idle");
 
-  // handle cliking buttons for moving to next question and recording again. 
-  const [recorded, setRecorded] = useState(false);
+   // References for MediaRecorder and audio chunks
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
 
+    /** Handler for toggling recording state.
+   * On start: request mic access, begin recording.
+   * On stop: finalize recording, process audio blob.
+   */
+  async function toggleRecord() {
+    if (status === "recording") {
+      // Stop recording if already recording
+      mediaRecorderRef.current?.stop();
+      setStatus("processing");
+      return;
+    }
 
+    // Ask user for mic access
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const recorder = new MediaRecorder(stream);
+    chunksRef.current = [];
+
+    // Collect audio data as it becomes available
+    recorder.ondataavailable = (e) => {
+      // event driven call (media data pushed into chunksRef list)
+      if (e.data && e.data.size > 0) {
+        chunksRef.current.push(e.data);
+      }
+    };
+
+    // On stop (recorder): assemble blob, decode it, and transcribe
+    recorder.onstop = async () => {
+       try {
+        // Create a blob from the recorded chunks and update processing state
+        // setProcessing(true);
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+
+        /** --- Audio Decoding Step ---
+         * Whisper expects raw waveform data at 16kHz sample rate in Float32Array format.
+         * `read_audio(...)` handles:
+         * - Decoding via Web Audio APIs
+         * - Resampling to 16000 Hz
+         * - Converting to mono (if stereo)
+         */
+        const url = URL.createObjectURL(blob);
+        const audioData = await read_audio(url, 16000);
+        URL.revokeObjectURL(url);
+        
+        // setRecorded(true);
+        // Lazy-load the Whisper Tiny model and run transcription
+        const transcriber = await getTranscriber();
+        const output = await transcriber(audioData, {
+          language: "en", // english language
+          task: "transcribe",
+          temperature: 0,   // less random focused and deterministic based on audio on output
+        });
+        const payload = {
+          interview_id: interview.id,
+          question_id: question.id,
+          applicant_id: applicant.id,
+          answer: output.text,
+          username: "s4703754"
+        };
+        await createApplicantAnswer(payload);
+        setStatus("uploaded");
+
+        } catch (err) {
+            console.error("Transcription failed:", err);
+            setStatus("idle");
+        } finally {
+          // Clean up mic stream and loading state
+          stream.getTracks().forEach((t) => t.stop());
+          // setProcessing(false);
+      }
+    };
+    // Start the recording
+    recorder.start();
+    mediaRecorderRef.current = recorder;
+    // setIsRecording(true);
+    setStatus("recording");
+  }
+
+  /*
+  used to handle next question dynamically
+  */
+  function handleNext() {
+    if (index < numberofQuestions - 1) {
+      // advance
+      setIndex((i) => i + 1);
+      setStatus("idle");
+      chunksRef.current = [];
+    } else {
+      // finished all questions
+      navigate("/interviews/complete-thanks");
+    }
+  }
 
   return (
       <div className="container my-5">
@@ -59,13 +150,13 @@ export default function TakeInterviewQuestions() {
                 <div className="progress-bar" style={{ width: `${percent}%` }} />
               </div>
                 <div className="mb-3 medium text-muted">
-                {`Question ${questionCount + 1} of ${numberofQuestions}`}
+                {`Question ${index + 1} of ${numberofQuestions}`}
                 </div>
                 
-                <h4 className="fw-bold mb-2 text-start">Question {questionCount + 1}</h4>
+                <h4 className="fw-bold mb-2 text-start">Question {index + 1}</h4>
 
                   <div className="bg-light border rounded p-3 mb-4 text-start">
-                    <p className="m-0 fs-5">{firstquestion.question}</p>
+                    <p className="m-0 fs-5">{question.question}</p>
                   </div>
   
   
@@ -73,25 +164,46 @@ export default function TakeInterviewQuestions() {
                 <div className="fw-semibold mb-2 text-start">Audio Recording:</div>
 
                 <div className="bg-light border rounded p-3">
-                  <div className="text-start gap-3">
+                  <div className="text-start">
                     <button
                       type="button"
-                      className={`btn btn-${isRecording ? "danger" : "primary"} btn-lg mb-2`}
-                      onClick={toggleRecording}
-                      disabled={recorded}
+                      className={`btn btn-${
+                        status === "recording" || status === "processing" ? "danger" :
+                        status === "uploaded" ? "success" : "primary"
+                      } btn-lg mb-2 d-inline-flex align-items-center justify-content-center gap-1`}
+                      onClick={toggleRecord}
+                      disabled={status === "processing" || status === "uploaded"}
                     >
-                      <i className={`bi ${isRecording ? "bi-stop-fill" : "bi-play-fill"} me-2`} />
-                      {isRecording ? "Stop Recording" : "Start Recording"}
+                      {status === "processing" ? (
+                        <span role="status" aria-live="polite" className="d-inline-flex align-items-center gap-1">
+                          <span className="spinner-border spinner-border-sm" aria-hidden="true" />
+                          <span>Processing audio…</span>
+                        </span>
+                      ) : (
+                        <>
+                          <i
+                            className={`bi ${status === "recording" ? "bi-stop-fill" : "bi-play-fill"}`}
+                            aria-hidden="true"
+                          />
+                          <span>
+                            {status === "recording"
+                              ? "Stop Recording"
+                              : status === "uploaded"
+                              ? "Uploaded Recording"
+                              : "Start Recording"}
+                          </span>
+                        </>
+                      )}
                     </button>
 
                     <div className="d-flex align-items-center gap-2 text-muted">
                       <span
-                        className={`d-inline-block rounded-circle ${isRecording ? "bg-danger flash" : "bg-secondary"}`}
+                        className={`d-inline-block rounded-circle ${status === "recording" ? "bg-danger flash" : "bg-secondary"}`}
                         style={{ width: 10, height: 10 }}
                         aria-hidden="true"
                       />
                       <small>
-                        {isRecording ? "Recording…" : "Click Start Recording to begin"}
+                        {status === "recording" ? "Recording…" : "Click Start Recording to begin"}
                       </small>
                     </div>
                     <div className="d-flex align-items-center gap-2 fw-bold">
@@ -103,13 +215,12 @@ export default function TakeInterviewQuestions() {
                 </div>
               </div>
             </div>
-               {/* path here needs to be changed @TODO*/}
               <button
               className="btn btn-primary btn-lg mt-4"
-              onClick={() => navigate("/interview/start")}
-              disabled={!recorded}
+              onClick={handleNext}
+              disabled={status === "processing" || status === "recording"}
               >
-              Next Question
+              {index + 1 === numberofQuestions ? "Finish Interview" : "Next Question"}
               </button>
             
         </div>

@@ -178,7 +178,7 @@ export default function ApplicantList() {
                     <td>{applicant.email_address}</td>
                     <td>{applicant.phone_number}</td>
                     <td>{applicant.numQuesAnswered}</td>
-                    <td>{numofInterviewques - applicant.numQuesAnswered}</td> {/*maybe instead of status have actions here and have status in the bar up there*/}
+                    <td>{numofInterviewques - applicant.numQuesAnswered}</td>
                   </tr>
                 </tbody>
               </table>

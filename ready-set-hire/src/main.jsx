@@ -21,6 +21,7 @@ import QuestionAddEditForm , {loader as QuestionAddEditLoader, action as Questio
 import ApplicantAddEditForm, {loader as ApplicantAddEditLoader, action as ApplicantAddEditAction } from './pages/ApplicantAddEditForm';
 import TakeInterview, {loader as TakeInterviewLoader } from './pages/TakeInterview';
 import TakeInterviewQuestions, {loader as TakeInterviewQuestionsLoader } from './pages/TakeInterviewQuestions';
+import TakeInterviewThanks from './pages/TakeInterviewThanks'
 
 const router = createBrowserRouter([
   {
@@ -41,7 +42,8 @@ const router = createBrowserRouter([
       { path: "interviews/:interviewid/applicants/new", element: <ApplicantAddEditForm />, loader: ApplicantAddEditLoader, action: ApplicantAddEditAction },
       { path: "interviews/:interviewid/applicants/:applicantid/edit", element: <ApplicantAddEditForm />, loader: ApplicantAddEditLoader, action: ApplicantAddEditAction },
       { path: "interviews/:interviewid/applicants/:applicantid/take-interview", element: <TakeInterview />, loader: TakeInterviewLoader },
-      { path: "interviews/:interviewid/applicants/:applicantid/take-interview/question/:questionid", element: <TakeInterviewQuestions />, loader: TakeInterviewQuestionsLoader }
+      { path: "interviews/:interviewid/applicants/:applicantid/take-interview/question/:questionid", element: <TakeInterviewQuestions />, loader: TakeInterviewQuestionsLoader },
+      { path: "interviews/complete-thanks", element: <TakeInterviewThanks />}
     ],
   },
 ]);

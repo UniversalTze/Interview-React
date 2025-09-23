@@ -29,7 +29,6 @@ export async function action({ request, params }) {
     await updateQuestion(params.questionid, payload, { signal: request.signal });
     return redirect(`/interviews/${params.interviewid}/questions`);
   } else {
-    console.log(payload);
     const created = await createQuestion(payload, { signal: request.signal });
     return redirect(`/interviews/${params.interviewid}/questions`);
   }
