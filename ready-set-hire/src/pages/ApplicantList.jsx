@@ -91,7 +91,7 @@ export default function ApplicantList() {
   }
   return (
       <div className="container-fluid px-5 my-4">
-          <div className="mb-3">
+        <div className="mb-3">
         <Link 
       to="/interviews"
       className="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
@@ -191,8 +191,8 @@ export default function ApplicantList() {
               </span>
               <Link   
                   to={applicant.applicantStatus === "Completed" ? 
-                      `/interviews/${interview.id}/applicant/${applicant.id}/answer`
-                      : `/interviews/${interview.id}/applicant/${applicant.id}/take-interview/`}
+                      `/interviews/${interview.id}/applicants/${applicant.id}/answer`
+                      : `/interviews/${interview.id}/applicants/${applicant.id}/take-interview`}
                   className="btn btn-primary d-flex justify-content-center align-items-center"
                   style={{ width: "10rem", height: "2rem"}}
                 >
