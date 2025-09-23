@@ -11,6 +11,9 @@ Tze Kheng Goh
 
 You should have locally hosted version of the website. Enjoy!
 
+
+## References
+All SVG and images have been sourced from unDraw. The link can be found here: [https://undraw.co/][website].
 ## AI References
 AI has been used for debugging, designing and just general coding. It has also been used to explain concepts and 
 quick summaries Bootstrap documentation. 

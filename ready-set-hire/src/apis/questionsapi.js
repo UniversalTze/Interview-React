@@ -21,6 +21,26 @@ export async function getAllQuestions (id, { signal } = {}) {
 }
 
 /** 
+ * Return first question of interview (sorted on difficulty)
+ */
+export async function getFirstQuestion (id, { signal } = {}) {
+  const questions = await getAllQuestions(id, { signal })
+  const difficultyOrder = { Easy: 1, Intermediate: 2, Advanced: 3 };
+  const sortedQues = questions.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+  return sortedQues[0];
+}
+
+/** 
+ * Return first question of interview (sorted on difficulty)
+ */
+export async function getRemainingQuestions (id, { signal } = {}) {
+  const questions = await getAllQuestions(id, { signal })
+  const difficultyOrder = { Easy: 1, Intermediate: 2, Advanced: 3 };
+  const sortedQues = questions.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+  return sortedQues.slice(1);
+}
+
+/** 
  * Get specific question  associated with an interview
  */
 export async function getSpecificQuestion (interviewid, questionid, { signal } = {}) {

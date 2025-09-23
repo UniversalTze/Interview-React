@@ -1,7 +1,7 @@
 import { Link, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { getSpecificApplicants } from "../apis/applicantapi";
-import { getSpecificInterview } from "../apis/interviewapi"
-import interviewIcon from "../assets/undraw_remote-worker.svg"
+import { getSpecificInterview } from "../apis/interviewapi";
+import interviewIcon from "../assets/undraw_remote-worker.svg";
 
 export async function loader({ params, request }) {
   let applicantarr = null;
