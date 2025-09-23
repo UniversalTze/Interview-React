@@ -20,6 +20,7 @@ import InterviewAddEditForm, { loader as InterviewEditLoader, action as Intervie
 import QuestionAddEditForm , {loader as QuestionAddEditLoader, action as QuestionAddEditAction } from './pages/QuestionAddEditForm';
 import ApplicantAddEditForm, {loader as ApplicantAddEditLoader, action as ApplicantAddEditAction } from './pages/ApplicantAddEditForm';
 import TakeInterview, {loader as TakeInterviewLoader } from './pages/TakeInterview';
+import TakeInterviewQuestions, {loader as TakeInterviewQuestionsLoader } from './pages/TakeInterviewQuestions';
 
 const router = createBrowserRouter([
   {
@@ -39,7 +40,8 @@ const router = createBrowserRouter([
       { path: "interviews/:interviewid/questions/:questionid/edit", element: <QuestionAddEditForm />, loader: QuestionAddEditLoader, action: QuestionAddEditAction },
       { path: "interviews/:interviewid/applicants/new", element: <ApplicantAddEditForm />, loader: ApplicantAddEditLoader, action: ApplicantAddEditAction },
       { path: "interviews/:interviewid/applicants/:applicantid/edit", element: <ApplicantAddEditForm />, loader: ApplicantAddEditLoader, action: ApplicantAddEditAction },
-      { path: "interviews/:interviewid/applicants/:applicantid/take-interview", element: <TakeInterview />, loader: TakeInterviewLoader }
+      { path: "interviews/:interviewid/applicants/:applicantid/take-interview", element: <TakeInterview />, loader: TakeInterviewLoader },
+      { path: "interviews/:interviewid/applicants/:applicantid/take-interview/question/:questionid", element: <TakeInterviewQuestions />, loader: TakeInterviewQuestionsLoader }
     ],
   },
 ]);

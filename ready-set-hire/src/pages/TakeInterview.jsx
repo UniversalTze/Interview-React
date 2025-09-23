@@ -1,6 +1,7 @@
 import { Link, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { getSpecificApplicants } from "../apis/applicantapi";
 import { getSpecificInterview } from "../apis/interviewapi";
+import { getFirstQuestion } from "../apis/questionsapi";
 import interviewIcon from "../assets/undraw_remote-worker.svg";
 
 export async function loader({ params, request }) {
@@ -10,10 +11,11 @@ export async function loader({ params, request }) {
   }
   applicantarr = await getSpecificApplicants(params.interviewid, params.applicantid, { signal: request.signal });
   const interviewarr = await getSpecificInterview(params.interviewid, { signal: request.signal });
+  const startques = await getFirstQuestion(params.interviewid, { signal: request.signal });
   if (!applicantarr || !interviewarr) { 
      throw new Response("Not Found", { status: 404 });
   }
-  return { applicantarr, interviewarr };
+  return { applicantarr, interviewarr, startques };
 }
 
 export default function TakeInterview() {
@@ -21,6 +23,7 @@ export default function TakeInterview() {
   const navigate = useNavigate();
   const interview = data.interviewarr[0];
   const applicant = data.applicantarr[0];
+  const question = data.startques;
 
   return (
     <div className="container my-5">
@@ -60,7 +63,7 @@ export default function TakeInterview() {
 
             <button
             className="btn btn-primary btn-lg mt-4"
-            onClick={() => navigate("/interview/start")}
+            onClick={() => navigate(`/interviews/${interview.id}/applicants/${applicant.id}/take-interview/question/${question.id}`)}
             >
             Start Interview
             </button>
