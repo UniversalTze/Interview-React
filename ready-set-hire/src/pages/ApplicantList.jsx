@@ -201,6 +201,13 @@ export default function ApplicantList() {
             </div>
             </div>
             </div>
+             <Link   
+                  to={`/interviews/${interview.id}/applicants/${applicant.id}/complete-thanks`}
+                  className="btn btn-primary d-flex justify-content-center align-items-center"
+                  style={{ width: "10rem", height: "2rem"}}
+                >
+                  Thank you screen
+                </Link>
         </div>
         ))}
     </div>

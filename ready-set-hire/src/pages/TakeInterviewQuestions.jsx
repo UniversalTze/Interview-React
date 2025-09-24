@@ -1,5 +1,5 @@
 import { Link, useLoaderData, redirect, useNavigate } from "react-router-dom";
-import React, { use, useMemo, useState, useRef } from "react";
+import React, { use, useMemo, useState, useRef, useEffect } from "react";
 import { getSpecificApplicants } from "../apis/applicantapi";
 import { getSpecificInterview } from "../apis/interviewapi";
 import { getAllQuestions, getFirstQuestion } from "../apis/questionsapi";
@@ -40,23 +40,46 @@ export default function TakeInterviewQuestions() {
     return Math.round(((index + 1) / numberofQuestions) * 100);
   }, [index, numberofQuestions]);
 
+  useEffect(() => {
+    // stop any stray recording
+    if (mediaRecorderRef.current?.state === "recording" || mediaRecorderRef.current?.state === "paused") {
+      try { mediaRecorderRef.current.stop(); } catch {}
+    }
+    // reset local state
+    setIndex(0);
+    setStatus("idle");
+    chunksRef.current = [];
+  }, [interview.id, applicant.id]); // when interviewid or applicant changes, reset these variables. 
+
   const [status, setStatus] = useState("idle");
 
    // References for MediaRecorder and audio chunks
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
 
+  function pauseRecording() {
+  if (mediaRecorderRef.current?.state === "recording") {
+    mediaRecorderRef.current.pause(); // triggers onpause
+    }
+  }
+
+  function resumeRecording() {
+    if (mediaRecorderRef.current?.state === "paused") {
+      mediaRecorderRef.current.resume(); // triggers onresume
+    }
+  }
+
+  function stopRecording() {
+  if (mediaRecorderRef.current?.state === "recording" || mediaRecorderRef.current?.state === "paused") {
+    mediaRecorderRef.current.stop(); // triggers onstop (final dataavailable then onstop)
+    }
+  }
+
     /** Handler for toggling recording state.
    * On start: request mic access, begin recording.
    * On stop: finalize recording, process audio blob.
    */
   async function toggleRecord() {
-    if (status === "recording") {
-      // Stop recording if already recording
-      mediaRecorderRef.current?.stop();
-      setStatus("processing");
-      return;
-    }
 
     // Ask user for mic access
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -71,11 +94,17 @@ export default function TakeInterviewQuestions() {
       }
     };
 
+    recorder.onpause = () =>  setStatus("paused");
+    recorder.onresume = () => setStatus("recording");
+
     // On stop (recorder): assemble blob, decode it, and transcribe
     recorder.onstop = async () => {
        try {
-        // Create a blob from the recorded chunks and update processing state
-        // setProcessing(true);
+        setStatus("processing");
+        // Give React time to commit, and the browser time to change animations
+        // Since its asynchronous, let React update state and its relevant components.
+        await new Promise(resolve => requestAnimationFrame(resolve));
+
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
 
         /** --- Audio Decoding Step ---
@@ -113,20 +142,19 @@ export default function TakeInterviewQuestions() {
         } finally {
           // Clean up mic stream and loading state
           stream.getTracks().forEach((t) => t.stop());
-          // setProcessing(false);
       }
     };
     // Start the recording
     recorder.start();
     mediaRecorderRef.current = recorder;
-    // setIsRecording(true);
     setStatus("recording");
   }
 
   /*
   used to handle next question dynamically
   */
-  function handleNext() {
+  function handleNext(interviewid, applicantid) {
+    console.log(index);
     if (index < numberofQuestions - 1) {
       // advance
       setIndex((i) => i + 1);
@@ -134,7 +162,7 @@ export default function TakeInterviewQuestions() {
       chunksRef.current = [];
     } else {
       // finished all questions
-      navigate("/interviews/complete-thanks");
+      navigate(`/interviews/${interviewid}/applicants/${applicantid}/complete-thanks`);
     }
   }
 
@@ -165,36 +193,27 @@ export default function TakeInterviewQuestions() {
 
                 <div className="bg-light border rounded p-3">
                   <div className="text-start">
-                    <button
-                      type="button"
-                      className={`btn btn-${
-                        status === "recording" || status === "processing" ? "danger" :
-                        status === "uploaded" ? "success" : "primary"
-                      } btn-lg mb-2 d-inline-flex align-items-center justify-content-center gap-1`}
-                      onClick={toggleRecord}
-                      disabled={status === "processing" || status === "uploaded"}
-                    >
-                      {status === "processing" ? (
-                        <span role="status" aria-live="polite" className="d-inline-flex align-items-center gap-1">
+                    <button onClick={status === "recording" || status === "paused" ? stopRecording : toggleRecord}
+                      className={`btn btn-${status === "recording" || status === "paused" || status === "processing" ? "danger" 
+                                          : status === "uploaded" ? "success" : "primary"}`}
+                      disabled={status==="uploaded" || status==="processing"}>
+                        {status === "recording" || status === "paused" || status === "processing" ? "Stop Recording"
+                          : status === "uploaded" ? "Uploaded Recording"
+                          : "Start Recording"}
+                    </button>
+
+                      <button onClick={status === "paused" ? resumeRecording : pauseRecording}
+                              className="btn btn-secondary ms-2"
+                              disabled={status !== "recording" && status !== "paused"}>
+                        {status === "paused" ? "Resume" : "Pause"}
+                      </button>
+
+                      {status === "processing" && (
+                        <span role="status" aria-live="polite" className="ms-3 d-inline-flex align-items-center gap-2 text-dark">
                           <span className="spinner-border spinner-border-sm" aria-hidden="true" />
                           <span>Processing audio…</span>
                         </span>
-                      ) : (
-                        <>
-                          <i
-                            className={`bi ${status === "recording" ? "bi-stop-fill" : "bi-play-fill"}`}
-                            aria-hidden="true"
-                          />
-                          <span>
-                            {status === "recording"
-                              ? "Stop Recording"
-                              : status === "uploaded"
-                              ? "Uploaded Recording"
-                              : "Start Recording"}
-                          </span>
-                        </>
                       )}
-                    </button>
 
                     <div className="d-flex align-items-center gap-2 text-muted">
                       <span
@@ -208,7 +227,7 @@ export default function TakeInterviewQuestions() {
                     </div>
                     <div className="d-flex align-items-center gap-2 fw-bold">
                       <small>
-                       * Note: You only have one attempt to record your answer. 
+                       * Note: You should only submit one recording. You can pause and resume the recording. 
                       </small>
                     </div>
                   </div>
@@ -217,8 +236,8 @@ export default function TakeInterviewQuestions() {
             </div>
               <button
               className="btn btn-primary btn-lg mt-4"
-              onClick={handleNext}
-              disabled={status === "processing" || status === "recording"}
+              onClick={() => handleNext(interview.id, applicant.id)}
+              disabled={status === "idle" || status === "processing" || status === "recording"}
               >
               {index + 1 === numberofQuestions ? "Finish Interview" : "Next Question"}
               </button>
