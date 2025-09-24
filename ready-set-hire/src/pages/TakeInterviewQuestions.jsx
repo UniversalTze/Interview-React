@@ -2,7 +2,8 @@ import { Link, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import React, { use, useMemo, useState, useRef, useEffect } from "react";
 import { getSpecificApplicants } from "../apis/applicantapi";
 import { getSpecificInterview } from "../apis/interviewapi";
-import { getAllQuestions, getFirstQuestion } from "../apis/questionsapi";
+import { getAllQuestions } from "../apis/questionsapi";
+import { updateApplicant } from "../apis/applicantapi";
 import { createApplicantAnswer } from "../apis/applicantansapi";
 import { getTranscriber } from '../ai';
 import { read_audio } from '@huggingface/transformers'; // Utility to decode audio Blob → Float32Array
@@ -153,7 +154,7 @@ export default function TakeInterviewQuestions() {
   /*
   used to handle next question dynamically
   */
-  function handleNext(interviewid, applicantid) {
+  async function handleNext(interviewid, applicant) {
     if (index < numberofQuestions - 1) {
       // advance
       setIndex((i) => i + 1);
@@ -161,7 +162,18 @@ export default function TakeInterviewQuestions() {
       chunksRef.current = [];
     } else {
       // finished all questions
-      navigate(`/interviews/${interviewid}/applicants/${applicantid}/complete-thanks`);
+      const payload = { 
+        "interview_id": interviewid,
+        "title": applicant.title,
+        "firstname": applicant.firstname,
+        "surname": applicant.surname,
+        "phone_number": applicant.phone_number,
+        "email_address": applicant.email_address,
+        "interview_status": "Completed",
+        "username": "s47037542"
+      }
+      await updateApplicant(applicant.id, payload);
+      navigate(`/interviews/${interviewid}/applicants/${applicant.id}/complete-thanks`);
     }
   }
 
@@ -235,7 +247,7 @@ export default function TakeInterviewQuestions() {
             </div>
               <button
               className="btn btn-primary btn-lg mt-4"
-              onClick={() => handleNext(interview.id, applicant.id)}
+              onClick={() => handleNext(interview.id, applicant)}
               disabled={status === "idle" || status === "processing" || status === "recording"}
               >
               {index + 1 === numberofQuestions ? "Finish Interview" : "Next Question"}
