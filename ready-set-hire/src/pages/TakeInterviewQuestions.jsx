@@ -154,7 +154,6 @@ export default function TakeInterviewQuestions() {
   used to handle next question dynamically
   */
   function handleNext(interviewid, applicantid) {
-    console.log(index);
     if (index < numberofQuestions - 1) {
       // advance
       setIndex((i) => i + 1);

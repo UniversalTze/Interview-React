@@ -8,7 +8,7 @@ const APPLICANT_ANS_URL = `${BASE_URL}/applicant_answer`;
 /** 
  * Get all answers assoicated wiht an applicant and interview
  */
-export const getApplicantAnswersSpecInt = (applicantid, interviewid,  { signal } = {}) =>
+export const getApplicantAnsSpecificInterview = (interviewid, applicantid,  { signal } = {}) =>
   request(`${APPLICANT_ANS_URL}?applicant_id=eq.${applicantid}&interview_id=eq.${interviewid}&order=id.asc`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
     headers: {

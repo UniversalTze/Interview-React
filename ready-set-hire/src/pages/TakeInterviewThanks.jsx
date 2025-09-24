@@ -72,9 +72,8 @@ export default function TakeInterview() {
                     <button
                         className="btn btn-primary btn-lg mt-4"
                         style={{ width: "200px", height: "50px" }}
-                        onClick={() => navigate("/interview/start")}
+                        onClick={() => navigate(`/interviews/${interview.id}/applicants/${applicant.id}/answer`)}
                     >
-                        {/* This path needs to be fixed (last screen) @TODO*/}
                     <i className="bi bi-briefcase-fill me-2"></i>
                     Answers
                     </button>

@@ -3,7 +3,7 @@
 import { Link, useLoaderData } from "react-router-dom";
 import React, {useState } from "react";
 import { deleteApplicant, getAllApplicants } from "../apis/applicantapi"
-import { getApplicantAnswersSpecInt } from "../apis/applicantansapi"
+import { getApplicantAnsSpecificInterview } from "../apis/applicantansapi"
 import { getAllQuestions } from "../apis/questionsapi";
 import { getSpecificInterview } from "../apis/interviewapi";
 import EmptyState from "../components/EmptyState";
@@ -24,7 +24,7 @@ export async function loader({ params, request }) {
   const numofInterviewques = interviewQues.length
   const applicantsdata = await Promise.all(    // returns an array of unresolved promises. When resolved it is interview project with 
       applicants.map(async (applicant) => {     // question and applicant count. 
-        const applicantAnsSpecInt = await getApplicantAnswersSpecInt(applicant.id, params.id, { signal: request.signal });
+        const applicantAnsSpecInt = await getApplicantAnsSpecificInterview(params.id, applicant.id, { signal: request.signal });
         const numberofApplicantsAns =  applicantAnsSpecInt.length
         const applicantstatus = determineApplicantStatus(numofInterviewques, numberofApplicantsAns);
 
@@ -201,13 +201,6 @@ export default function ApplicantList() {
             </div>
             </div>
             </div>
-             <Link   
-                  to={`/interviews/${interview.id}/applicants/${applicant.id}/complete-thanks`}
-                  className="btn btn-primary d-flex justify-content-center align-items-center"
-                  style={{ width: "10rem", height: "2rem"}}
-                >
-                  Thank you screen
-                </Link>
         </div>
         ))}
     </div>
