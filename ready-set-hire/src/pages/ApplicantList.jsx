@@ -26,7 +26,7 @@ export async function loader({ params, request }) {
       applicants.map(async (applicant) => {     // question and applicant count. 
         const applicantAnsSpecInt = await getApplicantAnsSpecificInterview(params.id, applicant.id, { signal: request.signal });
         const numberofApplicantsAns =  applicantAnsSpecInt.length
-        const applicantstatus = determineApplicantStatus(numofInterviewques, numberofApplicantsAns);
+        const applicantstatus = determineApplicantStatus(numofInterviewques, numberofApplicantsAns, applicant.status);
 
         return { ...applicant,   // returns value that goes into array, then goes to next callback
                 numQuesAnswered: numberofApplicantsAns,
@@ -38,25 +38,22 @@ export async function loader({ params, request }) {
   return { applicantsdata, interviewtitle, numofInterviewques, interviewarr };
 }
 
-function determineApplicantStatus(numberofQuestions, questionsAnswered) {
-  if (numberofQuestions === questionsAnswered && numberofQuestions != 0) { 
+function determineApplicantStatus(numberofQuestions, questionsAnswered, applicantStatus) {
+  if (applicantStatus === "Completed" || numberofQuestions === questionsAnswered && numberofQuestions != 0) { 
     return "Completed";
   } else if (numberofQuestions === 0) { 
     return "No Question Added";
-  } else if (!questionsAnswered) { 
-    return "Not-Started";
-  } else
-    return "In-Progress";
+  } else  { 
+    return "Not Started";
+  }
 }
 
 function getStatusColour(status) {
   switch(status) {
-    case "Not-Started":
+    case "Not Started":
       return "bg-danger";
     case "Completed":
       return "bg-success";
-    case "No Questions Added":
-      return "bg-info";
     default:
       return "bg-warning";
   }
@@ -76,6 +73,16 @@ export default function ApplicantList() {
   if (!applicants || applicants.length === 0) {
   return (
     <div className="container mt-4">
+      <Link 
+      to="/interviews"
+      className="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center mb-3"
+      style={{ width: "11rem", height: "3rem"}}
+      >
+      <span>
+      <i className="bi bi-arrow-left-square-fill me-2"></i> 
+      Back To Interviews
+      </span>
+      </Link>
       <EmptyState
         title="No Applicants Found"
         description="You don’t have any applicants  yet. Start by adding one to this interview."
@@ -169,7 +176,6 @@ export default function ApplicantList() {
                     <th>Email</th>
                     <th>Phone Number</th>
                     <th>Questions Completed</th>
-                    <th>Questions Remaining</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -178,7 +184,6 @@ export default function ApplicantList() {
                     <td>{applicant.email_address}</td>
                     <td>{applicant.phone_number}</td>
                     <td>{applicant.numQuesAnswered}</td>
-                    <td>{numofInterviewques - applicant.numQuesAnswered}</td>
                   </tr>
                 </tbody>
               </table>
