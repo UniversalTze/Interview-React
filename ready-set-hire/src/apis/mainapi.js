@@ -5,11 +5,21 @@ Main api.js that is shared across all APIs so code is not reused.
 export const BASE_URL = 'https://comp2140a2.uqcloud.net/api';
 
 export const token = import.meta.env.VITE_A2_WEB_TOKEN;
+
 /**
- * Small helper to handle fetch + errors consistently.
- * Passing signal: request.signal from loaders/actions lets React Router cancel 
- * fetches when the user navigates away. We also throw on non-OK HTTP so your route’s 
- * error boundary can render a friendly message.
+ * Makes an HTTP request using Fetch API and handles common error cases.
+ *
+ * - Throws a `Response` object on non-OK responses so React Router's
+ *   errorElement can handle it.
+ * - Returns parsed JSON or `null` if the response body is empty.
+ * - Supports `AbortController` signals for React Router loaders/actions.
+ *
+ * @async
+ * @function request
+ * @param {string} url - The full request URL.
+ * @param {Object} [options={}] - Fetch options such as method, headers, body, and signal.
+ * @returns {Promise<Object|null>} - The parsed JSON response, or `null` if the body is empty.
+ * @throws {Response} - When the HTTP status is not OK (>=400).
  */
 async function request(url, options = {}) {
   const res = await fetch(url, options);
@@ -23,6 +33,15 @@ async function request(url, options = {}) {
   return text ? JSON.parse(text) : null;
 }
 
+/**
+ * Safely extracts the text content of a Fetch response.
+ * Returns an empty string if reading fails.
+ *
+ * @async
+ * @function safeText
+ * @param {Response} res - The Fetch Response object.
+ * @returns {Promise<string>} - The response text, or an empty string if unreadable.
+ */
 async function safeText(res) {
   try { return await res.text(); } catch { return ''; }
 }
