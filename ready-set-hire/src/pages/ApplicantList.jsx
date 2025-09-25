@@ -1,7 +1,7 @@
 // ApplicantList used to represent applicants associated with a interview.
 
 import { Link, useLoaderData } from "react-router-dom";
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { deleteApplicant, getAllApplicants } from "../apis/applicantapi"
 import { getApplicantAnsSpecificInterview } from "../apis/applicantansapi"
 import { getAllQuestions } from "../apis/questionsapi";

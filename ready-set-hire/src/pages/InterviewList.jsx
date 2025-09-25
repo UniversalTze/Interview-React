@@ -4,7 +4,7 @@ import { Link, useLoaderData } from "react-router-dom";
 import React, { useState } from "react";
 import { deleteInterview, getAllInterviews } from "../apis/interviewapi";
 import { getAllQuestions } from "../apis/questionsapi"
-import { getAllApplicants } from "../apis/applicantapi"
+import { getAllApplicants, getAllApplicantsCompleted } from "../apis/applicantapi"
 import EmptyState from "../components/EmptyState";
 
 export async function loader({ request }) {
@@ -14,10 +14,12 @@ export async function loader({ request }) {
       allinterviews.map(async (interview) => {     // question and applicant count. 
         const questions = await getAllQuestions(interview.id, { signal: request.signal });
         const applicants = await getAllApplicants(interview.id, { signal: request.signal });
+        const completedApps = await getAllApplicantsCompleted(interview.id,  { signal: request.signal });
 
         return { ...interview,   // returns value that goes into array, then goes to next callback
                 numQ: questions.length,
                 numApp: applicants.length,
+                numComplete: completedApps.length
         };
       })
   );
@@ -33,6 +35,12 @@ function getStatusBadgeClass(status) {
     default:
       return "bg-primary";
   }
+}
+
+function calculatePercentage(numApplicants, numCompleted) { 
+  if (!numApplicants || numApplicants === 0) return 0;
+  const percent = Math.round((numCompleted / numApplicants) * 100);
+  return Math.min(percent, 100); // cap at 100 just in case
 }
 
 export default function InterviewList() {
@@ -124,6 +132,16 @@ export default function InterviewList() {
                   <h5 className="mb-3 text-muted">{interview.job_role || "No job role provided"}</h5>
                   <p className="mb-1 fw-semibold">What we're looking for:</p>
                   <p className="mb-3 text-muted">{interview.description || "No description available."}</p>
+              <div className="col-12 mb-3 text-center">
+                 <p className="mb-1 fw-semibold">
+                Applicant Completion Status: {calculatePercentage(interview.numApp, interview.numComplete)}%
+                </p>
+                <div className="progress mb-5" role="progressbar" aria-valuenow={calculatePercentage(interview.numApp, interview.numComplete)} aria-valuemin="0" aria-valuemax="100">
+                <div className="progress-bar text-dark" style={{ width: `${calculatePercentage(interview.numApp, interview.numComplete)}%`}} 
+                >
+                 </div>
+              </div>
+               </div>
               <div className="d-flex gap-2 justify-content-center">
               <Link
                   to={`/interviews/${interview.id}/questions?title=${encodeURIComponent(interview.title)}`}
@@ -134,8 +152,8 @@ export default function InterviewList() {
                       <i className="bi bi-question-square-fill me-2"></i> 
                       Questions: ({interview.numQ})
                   </span>
-                  </Link>
-                  <Link
+              </Link>
+               <Link
                   to={`/interviews/${interview.id}/applicants?title=${encodeURIComponent(interview.title)}`}
                   className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                   style={{ width: "12rem", height: "3rem"}}
@@ -144,7 +162,7 @@ export default function InterviewList() {
                       <i className="bi bi-people-fill me-2"></i> 
                       Applicants: ({interview.numApp})
                   </span>
-                  </Link>
+               </Link>
               </div> 
               </div>
               </div>
