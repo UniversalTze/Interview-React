@@ -17,6 +17,15 @@ export const getAllApplicants = (id, { signal } = {}) =>
     signal,
   });
 
+export const getAllApplicantsCompleted = (id, { signal } = {}) => 
+  request(`${APPLICANT_URL}?interview_id=eq.${id}&interview_status=eq.Completed&order=id.asc`, {
+    method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    signal,
+  });
+
 /**
  * Get specific applicant associated with an interview
  */
