@@ -158,6 +158,7 @@ export default function ApplicantAddEditForm() {
                   defaultValue={applicantdata?.email_address ?? ""}
                 />
               </div>
+                {/* Status has not been added here as it is believed that applicant should not be able to change their status */}
             </div>
           </BaseAddEditForm>
           </div>
