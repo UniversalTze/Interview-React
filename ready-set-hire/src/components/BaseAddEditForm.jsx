@@ -2,6 +2,22 @@
 import React from "react";
 import { Form } from "react-router-dom";
 
+/**
+ * BaseAddEditForm is a reusable form wrapper for add/edit operations.
+ *
+ * Renders a styled form with a title, children form fields, and submit/cancel buttons.
+ * Uses React Router's `<Form>` component to handle submission via actions.
+ * Displays a note about mandatory fields.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {string} props.title - The form's title displayed at the top.
+ * @param {Function} props.onSubmit - Callback triggered on form submission (handled by React Router action).
+ * @param {React.ReactNode} props.children - The form fields or additional content to render inside the form.
+ * @param {string} [props.submitLabel="Save"] - Label for the submit button.
+ * @param {Function} [props.cancel] - Optional callback to handle cancellation.
+ * @returns {JSX.Element} A styled add/edit form with submit and optional cancel buttons.
+ */
 export function BaseAddEditForm({ title, onSubmit, children, submitLabel = "Save", cancel }) {
   return ( // change method="post" in form for non-get method so that action is run instead of loader.
     <Form method="post" className="p-3 border rounded"> 

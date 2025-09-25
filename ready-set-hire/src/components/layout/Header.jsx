@@ -1,5 +1,18 @@
 import { Link, useLocation } from 'react-router-dom';
 
+/**
+ * Header component that renders a responsive navigation bar.
+ *
+ * Displays a brand link and a set of navigation links.
+ * Highlights the active link based on the current route.
+ * Uses Bootstrap classes for styling and responsiveness.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {string} props.rootName - The brand name displayed as the main link.
+ * @param {Array<{ label: string, path: string }>} props.navLinks - Array of navigation links with label and path.
+ * @returns {JSX.Element} A responsive header with navigation links.
+ */
 const Header = ({ rootName, navLinks }) => {
   const location = useLocation();
 
