@@ -6,6 +6,8 @@ const Home = () => {
     <div className="container mt-4">
       <h2>ReadySetHire</h2>
       <p>You're at the home page of an AI-powered Interview application built with React and Bootstrap.</p>
+      <br/>
+      <p> This was supposed to be where the AI feature went! :(</p>
     </div>
   );
 };
