@@ -61,7 +61,7 @@ export default function TakeInterview() {
                 <div className="col-auto">
                     <button
                         className="btn btn-primary btn-lg mt-4"
-                        onClick={() => navigate("/home")}
+                        onClick={() => navigate("/")}
                         style={{ width: "200px", height: "50px" }}
                     >
                      <i className="bi bi-house-door-fill me-2"></i>

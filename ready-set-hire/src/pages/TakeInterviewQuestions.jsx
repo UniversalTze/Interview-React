@@ -1,5 +1,5 @@
 import { Link, useLoaderData, redirect, useNavigate } from "react-router-dom";
-import React, { use, useMemo, useState, useRef, useEffect } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import { getSpecificApplicants } from "../apis/applicantapi";
 import { getSpecificInterview } from "../apis/interviewapi";
 import { getAllQuestions } from "../apis/questionsapi";
