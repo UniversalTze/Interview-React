@@ -3,9 +3,22 @@ import { createQuestion, getSpecificQuestion, updateQuestion } from "../apis/que
 import { getSpecificInterview } from "../apis/interviewapi"
 import { BaseAddEditForm } from "../components/BaseAddEditForm";
 
+/**
+ * Loader function for QuestionAddEditForm.
+ *
+ * Fetches the specific question if `questionid` is provided (edit mode),
+ * and always fetches the interview data for context.
+ *
+ * @async
+ * @param {Object} params - URL params, including interviewid and optional questionid
+ * @param {Object} request - React Router request object for abort signal
+ * @returns {Promise<Object>} Object containing `questionarr` and `interview`
+ * @throws {Response} 404 if question not found
+ */
 export async function loader({ params, request }) {
   let questionarr = null;
   if (params.questionid) {
+    // update
     questionarr = await getSpecificQuestion(params.interviewid, params.questionid, { signal: request.signal });
     if (!questionarr) throw new Response("Not Found", { status: 404 });
 
@@ -14,7 +27,18 @@ export async function loader({ params, request }) {
   return { questionarr, interview };
 }
 
-// One action for both /new and /edit/:id
+/**
+ * Action function for QuestionAddEditForm.
+ *
+ * Handles both creation and updating of a question:
+ * - If `questionid` is present, updates the question.
+ * - Otherwise, creates a new question for the given interview.
+ *
+ * @async
+ * @param {Object} params - URL params, including interviewid and optional questionid
+ * @param {Object} request - React Router request object containing formData
+ * @returns {Promise<Response>} Redirects to the list of questions for the interview
+ */
 export async function action({ request, params }) {
   const form = await request.formData(); // submitted form data
   const payload = {
@@ -34,10 +58,23 @@ export async function action({ request, params }) {
   }
 }
 
+/**
+ * QuestionAddEditForm Component
+ *
+ * Displays a form to add a new question or edit an existing one.
+ * Includes fields for:
+ * - Question text (textarea)
+ * - Difficulty (dropdown)
+ * 
+ * Uses BaseAddEditForm for consistent styling and submit/cancel handling.
+ *
+ * @component
+ * @returns {JSX.Element} Form for adding/editing a question
+ */
 export default function QuestionAddEditForm() {
   const data = useLoaderData(); // { interview }
   const navigate = useNavigate();
-  const isEdit = Boolean(data?.questionarr);
+  const isEdit = Boolean(data?.questionarr); // questionarr may be null if new (create)
   let questiondata = {};
   if (isEdit) { 
     questiondata = data?.questionarr[0];

@@ -7,6 +7,18 @@ import { getAllQuestions } from "../apis/questionsapi"
 import { getAllApplicants, getAllApplicantsCompleted } from "../apis/applicantapi"
 import EmptyState from "../components/EmptyState";
 
+/**
+ * Loader function for InterviewList.
+ *
+ * Fetches all interviews and enriches each with additional metadata:
+ * - Total number of questions in the interview
+ * - Total number of applicants
+ * - Number of applicants who have completed the interview
+ *
+ * @async
+ * @param {Object} request - React Router request object, used for abort signal
+ * @returns {Promise<Object>} Returns an object with `interviewsMetadata` array
+ */
 export async function loader({ request }) {
   const allinterviews = await getAllInterviews({ signal: request.signal });
   // using map as every element has a call back in map.
@@ -26,6 +38,12 @@ export async function loader({ request }) {
   return { interviewsMetadata };
 }
 
+/**
+ * Returns a Bootstrap badge class based on the interview status.
+ *
+ * @param {string} status - Status of the interview ("Draft", "Published", etc.)
+ * @returns {string} Bootstrap badge class name
+ */
 function getStatusBadgeClass(status) {
   switch(status) {
     case "Draft":
@@ -37,19 +55,40 @@ function getStatusBadgeClass(status) {
   }
 }
 
+/**
+ * Calculates the percentage of applicants who have completed the interview.
+ *
+ * @param {number} numApplicants - Total number of applicants
+ * @param {number} numCompleted - Number of applicants who have completed
+ * @returns {number} Completion percentage, capped at 100
+ */
 function calculatePercentage(numApplicants, numCompleted) { 
   if (!numApplicants || numApplicants === 0) return 0;
   const percent = Math.round((numCompleted / numApplicants) * 100);
   return Math.min(percent, 100); // cap at 100 just in case
 }
 
+/**
+ * InterviewList Component
+ *
+ * Displays a list of interviews in an accordion. Each interview item shows:
+ * - Title, status, job role, and description
+ * - Applicant completion status with a progress bar
+ * - Links to manage questions and applicants
+ * - Edit and delete actions
+ *
+ * Uses an EmptyState component if there are no interviews.
+ *
+ * @component
+ * @returns {JSX.Element} A list view of interviews
+ */
 export default function InterviewList() {
   const { interviewsMetadata } = useLoaderData();
-  const [interviews, setInterviews] = useState(interviewsMetadata);
+  const [interviews, setInterviews] = useState(interviewsMetadata); // create a state to track component changes
 
   const handleDeleteInterview = async(interviewID) => {
     await deleteInterview(interviewID); // API call
-    setInterviews(prev => prev.filter(i => i.id !== interviewID)); // remove from state
+    setInterviews(prev => prev.filter(i => i.id !== interviewID)); // remove from state array for re-render
   }
 
   // empty component

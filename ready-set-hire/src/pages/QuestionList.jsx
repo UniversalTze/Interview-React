@@ -5,7 +5,20 @@ import { getAllQuestions, deleteQuestion } from "../apis/questionsapi";
 import EmptyState from "../components/EmptyState";
 import React,{ useState } from "react";
 
-
+/**
+ * Loader function for QuestionList.
+ *
+ * Fetches all questions associated with a specific interview.
+ *
+ * @async
+ * @param {Object} params - URL params containing interview id
+ * @param {Object} request - React Router request object
+ * @returns {Promise<Object>} Object containing:
+ *  - questionsdata: Array of questions
+ *  - interviewtitle: Title from query string
+ *  - interviewid: Interview ID from params
+ * @throws {Response} 404 if no questions are found
+ */
 export async function loader({ params, request }) {
   const questionsdata = await getAllQuestions(params.id, { signal: request.signal });
   const url = new URL(request.url);
@@ -15,6 +28,14 @@ export async function loader({ params, request }) {
   return { questionsdata, interviewtitle, interviewid };
 }
 
+/**
+ * getQuestionDifficulty
+ *
+ * Maps a question's difficulty level to a Bootstrap badge class for styling.
+ *
+ * @param {string} status - "Easy", "Intermediate", or "Advanced"
+ * @returns {string} Bootstrap badge class
+ */
 function getQuestionDifficulty(status) {
   switch(status) {
     case "Easy":
@@ -25,6 +46,19 @@ function getQuestionDifficulty(status) {
       return "bg-danger";
   }
 }
+
+
+/**
+ * QuestionList Component
+ *
+ * Displays a list of questions for a specific interview.
+ * - Uses a table to display question text, difficulty, and action buttons.
+ * - Provides buttons for editing and deleting each question.
+ * - Handles empty state when no questions exist.
+ *
+ * @component
+ * @returns {JSX.Element} The question list table or empty state
+ */
 
 export default function QuestionList() {
   const { questionsdata, interviewtitle, interviewid } = useLoaderData();

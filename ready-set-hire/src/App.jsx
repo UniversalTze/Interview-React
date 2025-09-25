@@ -4,12 +4,32 @@ import { Outlet, useLoaderData } from "react-router-dom";
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 
-
+/**
+ * Loader function for the root route.
+ * Could be extended to fetch site-wide settings, user info, or config.
+ * Currently returns a static rootName.
+ *
+ * @async
+ * @function loader
+ * @returns {Promise<Object>} - Object containing rootName for the app
+ */
 export async function loader() {
   // Could fetch site-wide settings here; returning static for now
   return { rootName: "ReadySetHire" };
 }
 
+/**
+ * Root App component.
+ * 
+ * Renders the main layout including Header, dynamic Outlet (child route content),
+ * and Footer. Uses flexbox to push footer to the bottom.
+ *
+ * @component
+ * @example
+ * return (
+ *   <App />
+ * )
+ */
 export default function App() {
   const { rootName } = useLoaderData();
   const navLinks = [

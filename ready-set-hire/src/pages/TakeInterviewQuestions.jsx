@@ -8,6 +8,15 @@ import { createApplicantAnswer } from "../apis/applicantansapi";
 import { getTranscriber } from '../ai';
 import { read_audio } from '@huggingface/transformers'; // Utility to decode audio Blob → Float32Array
 
+/**
+ * Loader function for TakeInterviewQuestions route.
+ * Fetches the applicant, interview, and all questions for the given interview.
+ * 
+ * @param {Object} params - Route parameters (interviewid, applicantid, questionid)
+ * @param {Request} request - The current request object, used for abort signals
+ * @returns {Object} - applicantarr, questionsarr, interviewarr
+ * @throws {Response} - 400 if malformed path, 404 if data not found
+ */
 export async function loader({ params, request }) {
   let applicantarr = null;
   if (!params.applicantid || !params.interviewid || !params.questionid) {
@@ -23,7 +32,14 @@ export async function loader({ params, request }) {
   return { applicantarr, questionsarr, interviewarr };
 }
 
-
+/**
+ * TakeInterviewQuestions Component
+ * Displays a single interview question to the applicant, handles audio recording, transcription, and answer submission.
+ * Supports pausing/resuming recordings and navigation between questions.
+ * 
+ * @component
+ * @returns {JSX.Element} - The rendered interview question page with audio controls
+ */
 
 export default function TakeInterviewQuestions() {
   const data = useLoaderData();
@@ -37,10 +53,18 @@ export default function TakeInterviewQuestions() {
   const numberofQuestions = data.questionsarr.length
 
   // Use memo react feature to cache / memoize values that are calcuted and re-renders if numbers are changed. 
+  // Memoized progress percentage
   const percent = useMemo(() => { if (numberofQuestions === 0) return 0;
     return Math.round(((index + 1) / numberofQuestions) * 100);
   }, [index, numberofQuestions]);
 
+  // Component state
+  const [status, setStatus] = useState("idle"); // idle | recording | paused | processing | uploaded
+   // References for MediaRecorder and audio chunks
+  const mediaRecorderRef = useRef(null); // MediaRecorder instance
+  const chunksRef = useRef([]); // Audio chunks collected during recording
+
+  // Reset state when interview or applicant changes (additional guard)
   useEffect(() => {
     // stop any stray recording
     if (mediaRecorderRef.current?.state === "recording" || mediaRecorderRef.current?.state === "paused") {
@@ -52,33 +76,34 @@ export default function TakeInterviewQuestions() {
     chunksRef.current = [];
   }, [interview.id, applicant.id]); // when interviewid or applicant changes, reset these variables. 
 
-  const [status, setStatus] = useState("idle");
 
-   // References for MediaRecorder and audio chunks
-  const mediaRecorderRef = useRef(null);
-  const chunksRef = useRef([]);
-
+  /** Pause the current recording */
   function pauseRecording() {
   if (mediaRecorderRef.current?.state === "recording") {
     mediaRecorderRef.current.pause(); // triggers onpause
     }
   }
 
+  /** Resume the paused recording */
   function resumeRecording() {
     if (mediaRecorderRef.current?.state === "paused") {
       mediaRecorderRef.current.resume(); // triggers onresume
     }
   }
 
+  /** Stop the current recording */
   function stopRecording() {
   if (mediaRecorderRef.current?.state === "recording" || mediaRecorderRef.current?.state === "paused") {
     mediaRecorderRef.current.stop(); // triggers onstop (final dataavailable then onstop)
     }
   }
 
-    /** Handler for toggling recording state.
-   * On start: request mic access, begin recording.
-   * On stop: finalize recording, process audio blob.
+  /**
+   * Toggle recording on/off
+   * - Requests microphone access
+   * - Starts MediaRecorder
+   * - Collects audio chunks
+   * - On stop: decodes audio, transcribes using Whisper, and uploads answer
    */
   async function toggleRecord() {
 
@@ -151,12 +176,13 @@ export default function TakeInterviewQuestions() {
     setStatus("recording");
   }
 
-  /*
-  used to handle next question dynamically
-  */
+  /**
+   * Handle moving to the next question or finishing the interview.
+   * Updates applicant status to Completed when all questions are done.
+   */
   async function handleNext(interviewid, applicant) {
     if (index < numberofQuestions - 1) {
-      // advance
+      // advance (increase index and reset idle and chunksRef State)
       setIndex((i) => i + 1);
       setStatus("idle");
       chunksRef.current = [];
@@ -252,7 +278,6 @@ export default function TakeInterviewQuestions() {
               >
               {index + 1 === numberofQuestions ? "Finish Interview" : "Next Question"}
               </button>
-            
         </div>
         </div>
         </div>

@@ -1,6 +1,12 @@
 // Simple about page
 import React from 'react';
 
+/**
+ * About component that displays information about the ReadySetHire application.
+ *
+ * @component
+ * @returns {JSX.Element} A simple container with app name and description.
+ */
 const About = () => {
   return (
     <div className="container mt-4">

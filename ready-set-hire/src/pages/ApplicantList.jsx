@@ -9,12 +9,30 @@ import { getSpecificInterview } from "../apis/interviewapi";
 import EmptyState from "../components/EmptyState";
 
 
+/**
+ * Loader function for ApplicantList component.
+ *
+ * Fetches all data required to display a list of applicants for a specific interview.
+ * - Fetches all applicants for the interview
+ * - Fetches all questions for the interview
+ * - Fetches interview details
+ * - Determines how many questions each applicant has completed
+ * - Computes applicant status based on answers completed
+ *
+ * @async
+ * @param {Object} params - Loader parameters from react-router
+ * @param {Object} params.params - Route parameters containing `id` of the interview
+ * @param {Request} params.request - The fetch request object (used for abort signal)
+ * @returns {Promise<{ applicantsdata: Object[], interviewtitle: string, numofInterviewques: number, interviewarr: Object[] }>} Data required by the component
+ * @throws {Response} Throws 404 if no applicants or questions are found
+ */
 export async function loader({ params, request }) {
   // params.id here is the specific interview.
   const applicants = await getAllApplicants(params.id, { signal: request.signal });
   const interviewQues = await getAllQuestions(params.id,  { signal: request.signal});
   const interviewarr = await getSpecificInterview(params.id,{ signal: request.signal}); 
-    // query params
+  
+  // query params (added from previous link to get title)
   const url = new URL(request.url);
   const interviewtitle = url.searchParams.get("title");
 
@@ -25,19 +43,28 @@ export async function loader({ params, request }) {
   const applicantsdata = await Promise.all(    // returns an array of unresolved promises. When resolved it is interview project with 
       applicants.map(async (applicant) => {     // question and applicant count. 
         const applicantAnsSpecInt = await getApplicantAnsSpecificInterview(params.id, applicant.id, { signal: request.signal });
-        const numberofApplicantsAns =  applicantAnsSpecInt.length
+        const numberofApplicantsAns =  applicantAnsSpecInt.length   // how many questions answered
         const applicantstatus = determineApplicantStatus(numofInterviewques, numberofApplicantsAns, applicant.status);
-
+        // status based on number of questions answered or current status
+        // if user has completed their questions, their status will alwaybs be complete.
         return { ...applicant,   // returns value that goes into array, then goes to next callback
                 numQuesAnswered: numberofApplicantsAns,
                 applicantStatus: applicantstatus
         };
       })
   );
-  
   return { applicantsdata, interviewtitle, numofInterviewques, interviewarr };
 }
 
+/**
+ * Determine applicant status based on number of questions completed and current status.
+ * Note: When a complete status is achieved it is no longer reversible
+ *
+ * @param {number} numberofQuestions - Total number of questions in the interview
+ * @param {number} questionsAnswered - Number of questions answered by the applicant
+ * @param {string} applicantStatus - Current applicant status
+ * @returns {string} Returns "Completed", "Not Started", or "No Question Added"
+ */
 function determineApplicantStatus(numberofQuestions, questionsAnswered, applicantStatus) {
   if (applicantStatus === "Completed" || numberofQuestions === questionsAnswered && numberofQuestions != 0) { 
     return "Completed";
@@ -48,6 +75,12 @@ function determineApplicantStatus(numberofQuestions, questionsAnswered, applican
   }
 }
 
+/**
+ * Returns a Bootstrap color class for the applicant status badge.
+ *
+ * @param {string} status - Applicant status
+ * @returns {string} CSS class corresponding to the status ("bg-danger", "bg-success", or "bg-warning")
+ */
 function getStatusColour(status) {
   switch(status) {
     case "Not Started":
@@ -59,6 +92,21 @@ function getStatusColour(status) {
   }
 }
 
+
+/**
+ * ApplicantList component that displays all applicants for a specific interview.
+ *
+ * Provides functionality to:
+ * - View applicant details
+ * - View number of questions completed
+ * - Edit applicant
+ * - Delete applicant
+ * - Navigate to take the interview or view answers depending on applicant status
+ * - Show empty state if no applicants exist
+ *
+ * @component
+ * @returns {JSX.Element} A list of applicants with status and actions
+ */
 export default function ApplicantList() {
   const { applicantsdata, interviewtitle, numofInterviewques, interviewarr} = useLoaderData();
   const interview = interviewarr[0];

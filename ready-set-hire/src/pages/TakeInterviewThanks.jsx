@@ -3,7 +3,15 @@ import { getSpecificApplicants } from "../apis/applicantapi";
 import { getSpecificInterview } from "../apis/interviewapi";
 import thanksIcon from "../assets/undraw_team-collaboration.svg";
 
-
+/**
+ * Loader function for the interview completion "Thank You" page.
+ * Fetches the applicant and interview data to display completion details.
+ *
+ * @param {Object} params - Route parameters (interviewid, applicantid)
+ * @param {Request} request - The current request object, used for abort signals
+ * @returns {Object} - applicantarr and interviewarr
+ * @throws {Response} - 400 if malformed path, 404 if data not found
+ */
 export async function loader({ params, request }) {
   let applicantarr = null;
   if (!params.applicantid || !params.interviewid) {
@@ -17,10 +25,17 @@ export async function loader({ params, request }) {
   return { applicantarr, interviewarr};
 }
 
+/**
+ * TakeInterviewThankYou Component
+ * Displays a thank you page after the applicant has completed an interview.
+ * Provides navigation options to return home or review submitted answers.
+ *
+ * @component
+ * @returns {JSX.Element} - Rendered thank you page
+ */
 export default function TakeInterview() {
   const data = useLoaderData();
   const navigate = useNavigate();
-  // const interview = data.interviewarr[0];
   const applicant = data.applicantarr[0];
   const interview = data.interviewarr[0];
 
@@ -30,10 +45,9 @@ export default function TakeInterview() {
        <div className="col-lg-10">
         <div className="card shadow-sm border-2">
           <div className="card-body p-5 col-12">
-             {/* Right side SVG */}
-          <div className="text-center">
-            <img src={thanksIcon} alt="thanksIcon" className="mb-3" width={128} height={128} />
-          </div>
+            <div className="text-center">
+              <img src={thanksIcon} alt="thanksIcon" className="mb-3" width={128} height={128} />
+            </div>
             <div className="row align-items-center text-center justify-content-center">
               <h2 className="fw-bold mb-4">Thank you for Completing Your Interview</h2>
                <div className="row align-items-center text-center">

@@ -4,11 +4,22 @@ import { getSpecificInterview } from "../apis/interviewapi";
 import { getFirstQuestion } from "../apis/questionsapi";
 import interviewIcon from "../assets/undraw_remote-worker.svg";
 
+/**
+ * Loader function for the TakeInterview route.
+ * Fetches the applicant, interview, and first question for the interview.
+ * Throws errors if parameters are missing or data cannot be found.
+ * 
+ * @param {Object} params - The route parameters containing interviewid and applicantid.
+ * @param {Request} request - The current request object, used to pass abort signals.
+ * @returns {Object} - Contains applicant array, interview array, and first question.
+ */
 export async function loader({ params, request }) {
   let applicantarr = null;
   if (!params.applicantid || !params.interviewid) {
+    // necessary path params for page
     throw new Response("Malformed Path", { status: 400 });
   }
+  // Fetch applicant, interview, and first question.
   applicantarr = await getSpecificApplicants(params.interviewid, params.applicantid, { signal: request.signal });
   const interviewarr = await getSpecificInterview(params.interviewid, { signal: request.signal });
   const startques = await getFirstQuestion(params.interviewid, { signal: request.signal });
@@ -18,6 +29,14 @@ export async function loader({ params, request }) {
   return { applicantarr, interviewarr, startques };
 }
 
+/**
+ * TakeInterview component
+ * Displays a welcome page for the applicant before starting the interview.
+ * Shows applicant details, interview info, and a button to start the first question.
+ * 
+ * @component
+ * @returns {JSX.Element} - The rendered welcome/interview page.
+ */
 export default function TakeInterview() {
   const data = useLoaderData();
   const navigate = useNavigate();
@@ -68,8 +87,6 @@ export default function TakeInterview() {
             Start Interview
             </button>
             </div>
-
-
           {/* Right side SVG */}
           <div className="col-md-5 text-center">
             <img src={interviewIcon} alt="interviewIcon" className="mb-3" width={128} height={128} />

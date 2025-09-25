@@ -2,16 +2,39 @@ import { Link, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { getSpecificInterview,  updateInterview, createInterview } from "../apis/interviewapi";
 import { BaseAddEditForm } from "../components/BaseAddEditForm";
 
+/**
+ * Loader function to fetch data for the InterviewAddEditForm.
+ *
+ * Fetches the specific interview data if an ID is provided in the route parameters.
+ * Throws a 404 response if the interview is not found.
+ *
+ * @async
+ * @param {Object} params - The route parameters, including `id`.
+ * @param {Request} request - The request object from React Router.
+ * @returns {Promise<Object|null>} Returns an object containing the interview data or null if no ID is provided.
+ * @throws {Response} Throws a 404 Response if the interview is not found.
+ */
 export async function loader({ params, request }) {
-  if (!params.id) return null;   
+  if (!params.id) throw new Response("Malformed request", { status: 400 });
+  // interview id present
   const interviewarr = await getSpecificInterview(params.id,  { signal: request.signal });
   if (!interviewarr) throw new Response("Not Found", { status: 404 });
   // Information about interview
-  const interview = interviewarr[0]; //index into array
+  const interview = interviewarr[0]; //index into object array
   return { interview };
 }
 
-// One action for both /new and /edit/:id
+/**
+ * Action function to handle form submission for both creating and updating an interview.
+ *
+ * Extracts form data, constructs a payload, and calls the appropriate API function.
+ * Redirects the user back to the interviews list after creation or update.
+ *
+ * @async
+ * @param {Object} params - Route parameters, including `id` if editing.
+ * @param {Request} request - The request object containing form data.
+ * @returns {Promise<Response>} Redirect response to the `/interviews` route.
+ */
 export async function action({ request, params }) {
   const form = await request.formData(); // submitted form data
   const payload = {
@@ -32,6 +55,16 @@ export async function action({ request, params }) {
   }
 }
 
+/**
+ * InterviewAddEditForm Component
+ *
+ * Renders a form to create a new interview or edit an existing one. Uses `BaseAddEditForm`
+ * as a wrapper for consistent styling and layout. The form includes fields for title, job role,
+ * description, and status.
+ *
+ * @component
+ * @returns {JSX.Element} A form layout for adding or editing interview details.
+ */
 export default function InterviewAddEditForm() {
   const data = useLoaderData(); // { interview } | null
   const navigate = useNavigate();

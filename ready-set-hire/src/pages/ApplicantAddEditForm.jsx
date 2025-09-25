@@ -3,21 +3,42 @@ import { createApplicant, getSpecificApplicants, updateApplicant } from "../apis
 import { getSpecificInterview } from "../apis/interviewapi"
 import { BaseAddEditForm } from "../components/BaseAddEditForm";
 
+/**
+ * Loader function for ApplicantAddEditForm.
+ *
+ * Fetches specific applicant data (if editing) and the associated interview.
+ *
+ * @async
+ * @param {Object} params - Loader parameters from react-router.
+ * @param {Object} params.params - Route parameters.
+ * @param {Request} params.request - The fetch request object (used for abort signal).
+ * @returns {Promise<{ applicantarr: Object[] | null, interview: Object[] }>} Data for the form.
+ * @throws {Response} Throws 404 Response if the applicant is not found.
+ */
 export async function loader({ params, request }) {
   let applicantarr = null;
   if (params.applicantid) {
+    // means an update page
     applicantarr = await getSpecificApplicants(params.interviewid, params.applicantid, { signal: request.signal });
-    if (!applicantarr) throw new Response("Not Found", { status: 404 });
+    if (!applicantarr) throw new Response("Not Found", { status: 404 }); // applicant not found
 
   }
   const interview = await getSpecificInterview(params.interviewid, { signal: request.signal });
   return { applicantarr, interview };
 }
 
-// One action for both /new and /edit/:id
+/**
+ * Action function for handling form submission for both adding and editing an applicant.
+ *
+ * @async
+ * @param {Object} params - Action parameters from react-router.
+ * @param {Request} params.request - The submitted request object containing form data.
+ * @param {Object} params.params - Route parameters containing interviewid and optionally applicantid.
+ * @returns {Promise<Response>} Redirect response to the applicants list page.
+ */
 export async function action({ request, params }) {
   const form = await request.formData(); // submitted form data
-  const payload = {
+  const payload = { //build body
     interview_id: params.interviewid,
     title: form.get("title"),
     firstname: form.get("firstname"),
@@ -30,15 +51,27 @@ export async function action({ request, params }) {
   };
 
   if (params.applicantid) {
+    // update
     payload.id = params.applicantid;
     await updateApplicant(params.applicantid, payload, { signal: request.signal });
     return redirect(`/interviews/${params.interviewid}/applicants`);
   } else {
     const created = await createApplicant(payload, { signal: request.signal });
+    // take back to applicants page
     return redirect(`/interviews/${params.interviewid}/applicants`);
   }
 }
 
+/**
+ * ApplicantAddEditForm component for adding or editing an applicant.
+ *
+ * Displays a form pre-filled with applicant data if editing, or blank if adding a new applicant.
+ * Includes fields for title, first name, surname, phone number, email, and displays associated interview info.
+ * Uses BaseAddEditForm for consistent form layout and handling.
+ *
+ * @component
+ * @returns {JSX.Element} A form interface for creating or updating an applicant.
+ */
 export default function ApplicantAddEditForm() {
   const data = useLoaderData(); // { interview }
   const navigate = useNavigate();

@@ -4,8 +4,23 @@ import { getSpecificInterview } from "../apis/interviewapi"
 import { getApplicantAnsSpecificInterview } from "../apis/applicantansapi";
 import { getSpecificApplicants } from "../apis/applicantapi";
 
-
-
+/**
+ * Loader function for ApplicantAnswer Page.
+ *
+ * Fetches data required to display an applicant's answers for a specific interview.
+ * Retrieves:
+ * - Applicant data
+ * - Interview data
+ * - All questions for the interview
+ * - Applicant's answers
+ *
+ * @async
+ * @param {Object} params - Loader parameters from react-router.
+ * @param {Object} params.params - Route parameters containing `applicantid` and `interviewid`.
+ * @param {Request} params.request - The fetch request object (used for abort signal).
+ * @returns {Promise<{ applicantarr: Object[], interviewarr: Object[], questionsarr: Object[], answerarr: Object[] }>} Data for the component.
+ * @throws {Response} Throws 400 if path is malformed or 404 if any data is not found.
+ */
 export async function loader({ params, request }) {
   let applicantarr = null;
   if (!params.applicantid || !params.interviewid) {
@@ -21,13 +36,21 @@ export async function loader({ params, request }) {
   return { applicantarr, interviewarr, questionsarr, answerarr };
 }
 
+/**
+ * ApplicantAnswer component that displays an applicant's answers for a specific interview.
+ *
+ * Shows the applicant's name, the interview title, and a list of questions with the corresponding answers.
+ * Provides a back button to return to the applicants list.
+ *
+ * @component
+ * @returns {JSX.Element} A detailed view of applicant answers with questions and responses.
+ */
 export default function ApplicantAnswer() {
   const { applicantarr, interviewarr, questionsarr, answerarr } = useLoaderData();
-  const applicant = applicantarr[0];
-  const interview = interviewarr[0];
+  const applicant = applicantarr[0]; // get applicant obj
+  const interview = interviewarr[0]; // get interview obj
   const questions = questionsarr;
   const applicantanswer = answerarr;
-
 
   return (
     <div className="container-fluid px-5 my-4">
@@ -45,7 +68,7 @@ export default function ApplicantAnswer() {
             <i className="bi bi-arrow-left-square-fill me-2"></i> 
             Back To Applicants
             </span>
-            </Link>
+        </Link>
       </div> 
       {questions.map((question, idx) => (
         <div className="border rounded p-3 mb-3" key={idx}>
