@@ -38,6 +38,16 @@ export default function QuestionList() {
   if (!questions || questions.length === 0) {
     return (
       <div className="container mt-4">
+        <Link 
+              to="/interviews"
+              className="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center mb-3"
+              style={{ width: "11rem", height: "3rem"}}
+              >
+              <span>
+              <i className="bi bi-arrow-left-square-fill me-2"></i> 
+              Back To Interviews
+              </span>
+              </Link>
         <EmptyState
           title="No Questions Found"
           description="You don’t have any questions yet. Start by adding one to this interview." 

@@ -170,7 +170,7 @@ export default function TakeInterviewQuestions() {
         "phone_number": applicant.phone_number,
         "email_address": applicant.email_address,
         "interview_status": "Completed",
-        "username": "s47037542"
+        "username": "s4703754"
       }
       await updateApplicant(applicant.id, payload);
       navigate(`/interviews/${interviewid}/applicants/${applicant.id}/complete-thanks`);
