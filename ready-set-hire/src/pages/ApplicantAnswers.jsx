@@ -49,10 +49,10 @@ export default function ApplicantAnswer() {
       </div> 
       {questions.map((question, idx) => (
         <div className="border rounded p-3 mb-3" key={idx}>
-          <div className="border border-black mb-2 p-2 rounded bg-light border-black">
-            <strong>Question {idx + 1}:</strong> {question.title}
+          <div className="border border-black mb-2 p-2 rounded bg-light border-black text-start">
+            <strong>Question {idx + 1}:</strong> {question.question}
           </div>
-          <div className="p-2 rounded bg-secondary text-white border-start">
+          <div className="p-2 rounded bg-body-secondary text-black border-start text-start">
             <strong>Applicant Answer:</strong> {applicantanswer[idx].answer  || "No answer provided"}
           </div>
         </div>
