@@ -11,6 +11,10 @@ Tze Kheng Goh
 
 You should have locally hosted version of the website. Enjoy!
 
+### Edge Cases
+Sometimes you may run into a "Load Failed" page where the issue is a "Failed to load resource: Origin http://localhost:5173 is not allowed by Access-Control-Origin. Status code: 404". 
+
+Just restart the server or refresh the page and everything should be good as normal. 
 
 ## References
 All SVG and images have been sourced from unDraw. The link can be found here: [https://undraw.co/][website].
