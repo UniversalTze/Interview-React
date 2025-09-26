@@ -53,7 +53,7 @@ export async function action({ request, params }) {
     await updateQuestion(params.questionid, payload, { signal: request.signal });
     return redirect(`/interviews/${params.interviewid}/questions`);
   } else {
-    const created = await createQuestion(payload, { signal: request.signal });
+    await createQuestion(payload, { signal: request.signal });
     return redirect(`/interviews/${params.interviewid}/questions`);
   }
 }
