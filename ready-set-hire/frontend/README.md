@@ -3,6 +3,8 @@ A React project that helps with interview and the process of conducting it.
 TechStack: 
 React + Vite using a Bootstrap as CSS framework.
 
+Vite: modern frontend build tool that offers a faster development experience by leveraging native browser ES modules for its development server. It pre-bundles dependencies with esbuild for quicker startup times and uses Rollup for optimized production builds, making it faster than traditional build tools. This results in instant server start-up and real-time updates, enhancing developer experience. 
+
 ## Author
 Tze Kheng Goh
 
