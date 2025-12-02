@@ -1,5 +1,7 @@
 # ReadySetHire
-A React project that helps with interview and the process of conducting it. Front-end components done with Bootstrap. 
+A React project that helps with interview and the process of conducting it. 
+TechStack: 
+React + Vite using a Bootstrap as CSS framework.
 
 ## Author
 Tze Kheng Goh
