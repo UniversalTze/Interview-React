@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16 # postgress image on docker
+    restart: always    # restart if error occurs
+    environment: # env variables
+      POSTGRES_PASSWORD: ReadyTesting.1823
+      POSTGRES_USER: superReadyUser
+      POSTGRES_DB: ReadySetHire
+    ports:
+      - "5432:5432"
+    healthcheck: 
+      # runs subsequent commands in a bash shell below
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 10
+    #volumes: # used for persistent data.
+    # maps the volues from local to container
+    #  - ./db:/docker-entrypoint-initdb.d
+    #  - db-data:/var/lib/postgresql/data
+
+  postgrest:
+    image: postgrest/postgrest:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: "postgres://postgres:postgres@db:5432/appdb"
+      PGRST_DB_SCHEMA: "public"
+      PGRST_DB_ANON_ROLE: "none"
+      PGRST_JWT_SECRET: "MY_LOCAL_SECRET"
+    ports:
+      - "3000:3000"
+
+#volumes: (Stored in linux space allocated by docker)
+#  db-data:
