@@ -10,7 +10,7 @@ services:
       - "5432:5432"
     healthcheck: 
       # runs subsequent commands in a bash shell below
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U superReadyUser"]
       interval: 5s
       retries: 10
     #volumes: # used for persistent data.
@@ -23,10 +23,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      PGRST_DB_URI: "postgres://postgres:postgres@db:5432/appdb"
-      PGRST_DB_SCHEMA: "public"
-      PGRST_DB_ANON_ROLE: "none"
+    environment: # opened postgrest container port:5432 for postgress trafic
+      PGRST_DB_URI: "postgres://postgrest:postgrestpw@DB:5432/ReadySetHire"
+      PGRST_DB_SCHEMA: "readysethire"
+      PGRST_DB_ANON_ROLE: "anon"
       PGRST_JWT_SECRET: "MY_LOCAL_SECRET"
     ports:
       - "3000:3000"
