@@ -1,12 +1,5 @@
 CREATE SCHEMA readysethire;
 
--- Grant schema access
--- ALTER SCHEMA readysethire OWNER TO superReadyUser;
--- USAGE on a schema allows a role to reference objects in schema (nothing to do with table access) "can see the door - not read or modify the room"
-GRANT USAGE ON SCHEMA readysethire TO anon, authenticated;
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-
 -- Tables
 CREATE TABLE readysethire.INTERVIEW (
     id SERIAL PRIMARY KEY,
@@ -27,7 +20,7 @@ CREATE TABLE readysethire.QUESTION (
         ON DELETE CASCADE
 );
 
-ALTER TABLE QUESTION ADD CONSTRAINT TABLE_QUESTIONTYPE
+ALTER TABLE readysethire.QUESTION ADD CONSTRAINT TABLE_QUESTIONTYPE
     CHECK (difficulty IN (
         'Easy',
         'Intermediate',

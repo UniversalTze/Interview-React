@@ -3,6 +3,12 @@ CREATE ROLE anon NOLOGIN;
 CREATE ROLE authenticated NOLOGIN;
 CREATE ROLE postgrest LOGIN PASSWORD 'postgrestpw';
 
+-- Grant schema access
+-- ALTER SCHEMA readysethire OWNER TO superReadyUser;
+-- USAGE on a schema allows a role to reference objects in schema (nothing to do with table access) "can see the door - not read or modify the room"
+GRANT USAGE ON SCHEMA readysethire TO anon, authenticated;
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
 
 -- This one is for establishing connection for PostgREST and Postgress. 
 -- After establishing connection any requests will be given anon role (if unauthenticated by JWT)
