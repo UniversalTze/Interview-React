@@ -3,7 +3,7 @@ services:
     image: postgres:16 # postgress image on docker
     restart: always    # restart if error occurs
     environment: # env variables
-      POSTGRES_PASSWORD: ReadyTesting.1823 (these are not needed, as I create a user with a passowrd that is used as an URI)
+      POSTGRES_PASSWORD: ReadyTesting.1823
       #POSTGRES_USER: superReadyUser
       POSTGRES_DB: ReadySetHire
     ports:
