@@ -1,0 +1,9 @@
+services:
+  frontend:
+    build:
+      context: . 
+      # above the is the curent context given wehn file is ran
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8080:80"
+    
