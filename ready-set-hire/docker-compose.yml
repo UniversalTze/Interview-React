@@ -1,9 +1,44 @@
 services:
   frontend:
+    image: ready-set-hire-frontend
     build:
       context: . 
       # above the is the curent context given wehn file is ran
       dockerfile: Dockerfile.frontend
     ports:
       - "8080:80"
+  db:
+    image: postgres:16 # postgress image on docker
+    restart: always    # restart if error occurs
+    environment: # env variables
+      POSTGRES_PASSWORD: ReadyTesting.1823
+      #POSTGRES_USER: superReadyUser
+      POSTGRES_DB: ReadySetHire
+
+    healthcheck: 
+      # runs subsequent commands in a bash shell below
+      test: ["CMD-SHELL", "pg_isready -U postgrest -d ReadySetHire"]
+      interval: 5s
+      retries: 10
+    volumes: # bind mount (db so that it exists in container)
+      - ./backend/db:/docker-entrypoint-initdb.d 
+    # this is for it to exist after (named volume)
+    #  - db-data:/var/lib/postgresql/data
+
+  postgrest:
+    image: postgrest/postgrest:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment: # opened postgrest container port:5432 for postgress trafic
+      PGRST_DB_URI: "postgres://postgrest:postgrestpw@db:5432/ReadySetHire"
+      PGRST_DB_SCHEMA: "readysethire"
+      PGRST_DB_ANON_ROLE: "anon"
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3000:3000"
+
+#volumes: (Stored in linux space allocated by docker)
+#  db-data:"
     

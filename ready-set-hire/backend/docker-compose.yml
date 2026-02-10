@@ -6,8 +6,7 @@ services:
       POSTGRES_PASSWORD: ReadyTesting.1823
       #POSTGRES_USER: superReadyUser
       POSTGRES_DB: ReadySetHire
-    ports:
-      - "5432:5432"
+
     healthcheck: 
       # runs subsequent commands in a bash shell below
       test: ["CMD-SHELL", "pg_isready -U postgrest -d ReadySetHire"]
