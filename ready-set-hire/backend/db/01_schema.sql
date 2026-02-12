@@ -82,5 +82,5 @@ Cron Job runs at 10:02:00 -> minus 1 min = 10:01:00 (A is removed and so is B) B
 """
 SELECT cron.schedule(
        '* * * * *', 
-       $$DELETE FROM readysethire.INTERVIEW WHERE created_at < now() - interval '1 minute'$$ --'30 minutes is ideal I believe'
+       $$DELETE FROM readysethire.INTERVIEW WHERE created_at < now() - interval '5 minute'$$ --'30 minutes is ideal I believe'
 );

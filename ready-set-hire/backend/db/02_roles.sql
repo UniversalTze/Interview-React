@@ -27,3 +27,24 @@ TO authenticated;
 GRANT USAGE, SELECT
 ON ALL SEQUENCES IN SCHEMA readysethire
 TO authenticated;
+
+INSERT INTO readysethire.INTERVIEW
+(title, job_role, "description", "status")
+VALUES
+('Test Interview', 'Software Engineer', 'Cron job testing interview', 'Open');
+
+INSERT INTO readysethire.QUESTION (interview_id, question, difficulty)
+VALUES
+(
+  (SELECT id FROM readysethire.INTERVIEW WHERE title = 'Test Interview'),
+  'Explain how garbage collection works.',
+  'Intermediate'
+);
+
+INSERT INTO readysethire.QUESTION (interview_id, question, difficulty)
+VALUES
+(
+  (SELECT id FROM readysethire.INTERVIEW WHERE title = 'Test Interview'),
+  'What is the difference between REST and GraphQL?',
+  'Easy'
+);
