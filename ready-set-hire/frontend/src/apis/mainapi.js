@@ -2,8 +2,7 @@
 Main api.js that is shared across all APIs so code is not reused. 
 */
 
-export const BASE_URL = 'http:localhost:8080';
-
+export const BASE_URL = "http://localhost:3000";
 
 // const secret = import.meta.env.VITE_WEB_TOKEN
 
