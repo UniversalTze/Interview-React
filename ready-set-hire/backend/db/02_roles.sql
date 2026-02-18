@@ -27,24 +27,26 @@ TO webdemo;
 GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA readysethire TO webdemo;
 
 INSERT INTO readysethire.INTERVIEW
-(title, job_role, "description", "status")
+(title, job_role, "description", "status", username)
 VALUES
-('Test Interview', 'Software Engineer', 'Cron job testing interview', 'Open');
+('Test Interview', 'Software Engineer', 'testing interview, so that there is one on start-up', 'Open', 's4703754');
 
-INSERT INTO readysethire.QUESTION (interview_id, question, difficulty)
+INSERT INTO readysethire.QUESTION (interview_id, question, difficulty, username)
 VALUES
 (
   (SELECT id FROM readysethire.INTERVIEW WHERE title = 'Test Interview'),
   'Explain how garbage collection works.',
-  'Intermediate'
+  'Intermediate',
+  's4703754'
 );
 
-INSERT INTO readysethire.QUESTION (interview_id, question, difficulty)
+INSERT INTO readysethire.QUESTION (interview_id, question, difficulty, username)
 VALUES
 (
   (SELECT id FROM readysethire.INTERVIEW WHERE title = 'Test Interview'),
   'What is the difference between REST and GraphQL?',
-  'Easy'
+  'Easy',
+  's4703754'
 );
 
-\echo "Complete with no Errors"
+\echo 'Complete with no Errors'
