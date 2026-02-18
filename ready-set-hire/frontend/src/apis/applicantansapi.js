@@ -1,7 +1,7 @@
 /*
 Api for the Applicant's answer end point
 */
-import request, { BASE_URL, token } from './mainapi'
+import request, { BASE_URL } from './mainapi'
 
 const APPLICANT_ANS_URL = `${BASE_URL}/applicant_answer`;
 
@@ -17,9 +17,6 @@ const APPLICANT_ANS_URL = `${BASE_URL}/applicant_answer`;
 export const getApplicantAnsSpecificInterview = (interviewid, applicantid,  { signal } = {}) =>
   request(`${APPLICANT_ANS_URL}?applicant_id=eq.${applicantid}&interview_id=eq.${interviewid}&order=id.asc`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });
 
@@ -35,9 +32,6 @@ export const getApplicantAnsSpecificInterview = (interviewid, applicantid,  { si
 export const getAllApplicantAnswers = (applicantid,  { signal } = {}) =>
   request(`${APPLICANT_ANS_URL}?applicant_id=eq.${applicantid}&order=id.asc`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });
 
@@ -54,7 +48,6 @@ export const createApplicantAnswer = (post, { signal } = {}) =>
     method: 'POST',
     headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(post),
     signal,
@@ -75,7 +68,6 @@ export const updateApplicantAnswer = (id, post, { signal } = {}) =>
     method: 'PATCH',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(post),
     signal,
@@ -93,8 +85,5 @@ export const updateApplicantAnswer = (id, post, { signal } = {}) =>
 export const deleteApplicantAnswer = (id, { signal } = {}) =>
   request(`${APPLICANT_ANS_URL}?id=eq.${id}`, {
     method: 'DELETE',
-     headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });

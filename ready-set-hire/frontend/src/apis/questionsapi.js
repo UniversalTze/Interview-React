@@ -1,7 +1,7 @@
 /*
 Api for the Applicant Endpoint
 */
-import request, { BASE_URL, token } from './mainapi'
+import request, { BASE_URL } from './mainapi'
 
 const QUESTION_URL = `${BASE_URL}/question`;
 
@@ -18,9 +18,6 @@ const QUESTION_URL = `${BASE_URL}/question`;
 export async function getAllQuestions (id, { signal } = {}) {
   const questions = await request(`${QUESTION_URL}?interview_id=eq.${id}`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   })
   const difficultyOrder = { Easy: 1, Intermediate: 2, Advanced: 3 };
@@ -60,9 +57,6 @@ export async function getFirstQuestion (id, { signal } = {}) {
 export async function getSpecificQuestion (interviewid, questionid, { signal } = {}) {
   const questions = await request(`${QUESTION_URL}?interview_id=eq.${interviewid}&id=eq.${questionid}`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   })
   const difficultyOrder = { Easy: 1, Intermediate: 2, Advanced: 3 };
@@ -83,7 +77,6 @@ export const createQuestion = (post, { signal } = {}) =>
     method: 'POST',
     headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(post),
     signal,
@@ -104,7 +97,6 @@ export const updateQuestion = (id, post, { signal } = {}) =>
     method: 'PATCH',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(post),
     signal,
@@ -122,8 +114,5 @@ export const updateQuestion = (id, post, { signal } = {}) =>
 export const deleteQuestion = (id, { signal } = {}) =>
   request(`${QUESTION_URL}?id=eq.${id}`, {
     method: 'DELETE',
-     headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });

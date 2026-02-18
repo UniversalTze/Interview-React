@@ -1,7 +1,7 @@
 /*
 Api for the Applicant Endpoint
 */
-import request, { BASE_URL, token } from './mainapi'
+import request, { BASE_URL } from './mainapi'
 
 const APPLICANT_URL = `${BASE_URL}/applicant`;
 
@@ -17,9 +17,6 @@ const APPLICANT_URL = `${BASE_URL}/applicant`;
 export const getAllApplicants = (id, { signal } = {}) => 
   request(`${APPLICANT_URL}?interview_id=eq.${id}&order=id.asc`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });
 
@@ -35,9 +32,6 @@ export const getAllApplicants = (id, { signal } = {}) =>
 export const getAllApplicantsCompleted = (id, { signal } = {}) => 
   request(`${APPLICANT_URL}?interview_id=eq.${id}&interview_status=eq.Completed&order=id.asc`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });
 
@@ -54,9 +48,6 @@ export const getAllApplicantsCompleted = (id, { signal } = {}) =>
 export const getSpecificApplicants = (interviewid, applicantid, { signal } = {}) => 
   request(`${APPLICANT_URL}?interview_id=eq.${interviewid}&id=eq.${applicantid}&order=id.asc`, {
     method: 'GET',  // optional, fetch defaults to GET (content defaults to JSON)
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });
 
@@ -75,7 +66,6 @@ export const createApplicant = (post, { signal } = {}) =>
     method: 'POST',
     headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(post),
     signal,
@@ -97,7 +87,6 @@ export const updateApplicant = (id, post, { signal } = {}) =>
     method: 'PATCH',
     headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(post),
     signal,
@@ -115,8 +104,5 @@ export const updateApplicant = (id, post, { signal } = {}) =>
 export const deleteApplicant = (id, { signal } = {}) =>
   request(`${APPLICANT_URL}?id=eq.${id}`, {
     method: 'DELETE',
-     headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });

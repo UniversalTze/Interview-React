@@ -2,14 +2,10 @@
 Main api.js that is shared across all APIs so code is not reused. 
 */
 
-export const BASE_URL = 'https://comp2140a2.uqcloud.net/api';
+export const BASE_URL = 'http:localhost:8080';
 
-export const token = import.meta.env.VITE_A2_WEB_TOKEN;
 
-const secret = import.meta.env.VITE_WEB_TOKEN
-
-const jwt = require('jsonwebtoken');
-const cur_token = jwt.sign({ user: 'example' }, secret, { expiresIn: '365d' });
+// const secret = import.meta.env.VITE_WEB_TOKEN
 
 /**
  * Makes an HTTP request using Fetch API and handles common error cases.

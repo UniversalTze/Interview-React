@@ -1,7 +1,7 @@
 /*
 Api for the Interview Endpoint
 */
-import request, { BASE_URL, token } from './mainapi'
+import request, { BASE_URL } from './mainapi'
 
 const INTERVIEW_BASE_URL = `${BASE_URL}/interview`;
 
@@ -16,9 +16,6 @@ const INTERVIEW_BASE_URL = `${BASE_URL}/interview`;
 export const getAllInterviews = ({ signal } = {}) =>
   request(`${INTERVIEW_BASE_URL}?order=id.asc`, {
     method: 'GET',  // optional, fetch defaults to GET
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });
 
@@ -35,9 +32,6 @@ export const getAllInterviews = ({ signal } = {}) =>
 export const getSpecificInterview = (id, post, { signal } = {}) =>
   request(`${INTERVIEW_BASE_URL}?id=eq.${id}`, {
     method: 'GET',
-    headers: { 
-        'Authorization': `Bearer ${token}`,
-    },
     signal
   });
 
@@ -55,7 +49,6 @@ export const createInterview = (post, { signal } = {}) =>
     method: 'POST',
     headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(post),
     signal,
@@ -76,7 +69,6 @@ export const updateInterview = (id, post, { signal } = {}) =>
     method: 'PATCH',
     headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(post),
     signal,
@@ -94,8 +86,5 @@ export const updateInterview = (id, post, { signal } = {}) =>
 export const deleteInterview = (id, { signal } = {}) =>
   request(`${INTERVIEW_BASE_URL}?id=eq.${id}`, {
     method: 'DELETE',
-     headers: {
-      'Authorization': `Bearer ${token}`,
-    },
     signal,
   });
