@@ -1,5 +1,26 @@
 services:
+# issue was not with docker caches or builds. It was with browser caches. 
+# browser caches files aggressively to save bandwidth and speed up load times.
+# When you first visited your app, the browser downloaded the JS bundle and saved a copy locally. 
+# The next time you visited, instead of re-downloading the file, it just served the saved copy — 
+# even though the file on the server had changed. The browser had no way to know the content was different
+#  because the URL looked the same (/assets/index-xxx.js).
   frontend:
+    x-notes: |
+        The hash changing only helps if the browser actually goes back to the server to check what files are available.
+        When your browser loaded the app the first time, it cached not just the JS file, but also the HTML file (index.html). 
+        That HTML file is what contains the <script> tag pointing to index-OldHash.js. So when you revisited the app, 
+        the browser loaded the cached HTML, saw the same old script tag pointing to index-OldHash.js, and served 
+        that from cache too — it never even looked at the new HTML that pointed to index-Jpy1gUh8.js.
+
+        Chain of Failure:
+        1. Browser loads cached index.html → sees reference to index-OldHash.js 
+        2. Browser loads cached index-OldHash.js → old URL, old bundle, done
+        3. New index.html and index-NewHash.js sitting on the server, never consulted
+        The proper fix for production apps is to configure your server (in your case nginx) to tell the browser never to cache index.html, 
+        but to cache JS/CSS files aggressively since those have hashed names. That way the HTML is always fresh, the new hash is 
+        always discovered, and cache busting works as intended automatically.
+
     image: ready-set-hire-frontend
     build:
       context: . 

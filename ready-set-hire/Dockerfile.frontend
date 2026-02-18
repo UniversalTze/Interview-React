@@ -2,6 +2,8 @@ FROM node:20 AS builder
 # Multi stage build (Build optimised front-end)
 WORKDIR /app
 COPY frontend .
+RUN rm -rf node_modules/.vite  # clean Vite cache inside container
+RUN rm -rf dist
 RUN npm install
 RUN npm run build
 
