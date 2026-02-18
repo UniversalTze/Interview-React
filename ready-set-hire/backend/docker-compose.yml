@@ -25,9 +25,7 @@ services:
     environment: # opened postgrest container port:5432 for postgress trafic
       PGRST_DB_URI: "postgres://postgrest:postgrestpw@db:5432/ReadySetHire"
       PGRST_DB_SCHEMA: "readysethire"
-      PGRST_DB_ANON_ROLE: "anon"
-    env_file:
-      - .env
+      PGRST_DB_ANON_ROLE: "webdemo"
     ports:
       - "3000:3000"
 
