@@ -27,7 +27,7 @@ Users can:
 2. Navigate into ready-set-hire folder. `cd ready-set-hire`
 3. Ensure and run this script: `./launch.sh`
 4. Enjoy the demo!
-5. A cleanup script can be found in repo in "ready-set-hire" directory. So `cd ready-set-hire` and `./cleanup.sh`
+5. A cleanup script can be found in repo in "ready-set-hire" directory. So run `cd ready-set-hire` and then `./cleanup.sh`
 
    
 ## Author
