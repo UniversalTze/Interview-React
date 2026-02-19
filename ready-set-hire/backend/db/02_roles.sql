@@ -49,4 +49,51 @@ VALUES
   's4703754'
 );
 
+-- Applicant 1: Completed all questions
+INSERT INTO readysethire.APPLICANT
+(interview_id, title, firstname, surname, phone_number, email_address, interview_status, username)
+VALUES
+(
+  (SELECT id FROM readysethire.INTERVIEW WHERE title = 'Test Interview'),
+  'Mr',
+  'John',
+  'Doe',
+  '1234567890',
+  'john.doe@example.com',
+  'Completed',
+  's4703754'
+);
+
+-- Applicant 2: Has not done any questions yet
+INSERT INTO readysethire.APPLICANT
+(interview_id, title, firstname, surname, phone_number, email_address, interview_status, username)
+VALUES
+(
+  (SELECT id FROM readysethire.INTERVIEW WHERE title = 'Test Interview'),
+  'Ms',
+  'Jane',
+  'Smith',
+  '9876543210',
+  'jane.smith@example.com',
+  'Pending',
+  's4703754'
+);
+
+-- Applicant 1 answers all questions
+INSERT INTO readysethire.APPLICANT_ANSWER (interview_id, question_id, applicant_id, answer, username)
+SELECT 
+    i.id,
+    q.id,
+    a.id,
+    CASE 
+        WHEN q.question = 'Explain how garbage collection works.' THEN 'Garbage collection automatically frees memory that is no longer used by the program.'
+        WHEN q.question = 'What is the difference between REST and GraphQL?' THEN 'REST uses fixed endpoints and multiple requests; GraphQL allows fetching exactly what you need in a single request.'
+    END AS answer,
+    's4703754'
+FROM readysethire.INTERVIEW i
+JOIN readysethire.QUESTION q ON q.interview_id = i.id
+JOIN readysethire.APPLICANT a ON a.interview_id = i.id
+WHERE i.title = 'Test Interview'
+  AND a.firstname = 'John';
+
 \echo 'Complete with no Errors'
