@@ -12,7 +12,7 @@ Tze Kheng Goh
 - Git clone the repo. 
 - After git cloning navigate to root and run `npm install`
 - run `npm run dev`
-- Ensure that you also go into ready-set-hire/backend and run `docker compose up -d`. (This application only works when you have a backend server feeding it information. I've made a simple one to handle this. 
+- Ensure that you also go into ready-set-hire/backend and run `docker compose up -d`. (This application only works when you have a backend server feeding it information. I've made a simple one to handle this.). Check here {Link to Read Me}! 
 
 You should have locally hosted version of the website. Enjoy!
 
