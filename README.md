@@ -22,8 +22,13 @@ Users can:
 - Backend: PostgREST and Postgres.
 - Packaga Manager: Node
 
+## Instructions
+1. Clone the repo using this: `Git clone https://github.com/UniversalTze/Interview-React`
+2. Navigate into ready-set-hire folder. `cd ready-set-hire`
+3. Run this docker command: `docker compose` (should be a dev script).
+4. Enjoy the demo!
+
+   
 ## Author
 Tze Kheng Goh
-
-## Instructions
 
